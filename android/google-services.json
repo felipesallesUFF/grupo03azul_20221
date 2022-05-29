@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "62314635222",
+    "project_id": "alquimia-lek3",
+    "storage_bucket": "alquimia-lek3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:62314635222:android:ad35874bcb388238168e77",
+        "android_client_info": {
+          "package_name": "br.uff.ic.lek"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "62314635222-v2n4bnekva7dkc2lv7o1cf0vg7fvtkob.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.uff.ic.lek",
+            "certificate_hash": "a42983e55c0b1a9a745ddc1ec67d0920fabc3d2d"
+          }
+        },
+        {
+          "client_id": "62314635222-4uk71qqai4g58a7m9bhpjosn9856d8ip.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAO33r_eB1RgQQBG7JU_-YmbKGjIrSRa6s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "62314635222-4uk71qqai4g58a7m9bhpjosn9856d8ip.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

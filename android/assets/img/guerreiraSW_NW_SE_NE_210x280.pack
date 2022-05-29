@@ -1,0 +1,88 @@
+guerreiraSW_NW_SE_NE_210x280.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+SouthWest01
+  rotate: false
+  xy: 0, 0
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1
+SouthWest02
+  rotate: false
+  xy: 70, 0
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1
+SouthWest03
+  rotate: false
+  xy: 140, 0
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1
+NorthWest01
+  rotate: false
+  xy: 0, 70
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1
+NorthWest02
+  rotate: false
+  xy: 70, 70
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1
+NorthWest03
+  rotate: false
+  xy: 140, 70
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1
+SouthEast01
+  rotate: false
+  xy: 0, 140
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1
+SouthEast02
+  rotate: false
+  xy: 70, 140
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1
+SouthEast03
+  rotate: false
+  xy: 140, 140
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1
+NorthEast01
+  rotate: false
+  xy: 0, 210
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1
+NorthEast02
+  rotate: false
+  xy: 70, 210
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1
+NorthEast03
+  rotate: false
+  xy: 140, 210
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1

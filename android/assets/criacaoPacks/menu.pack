@@ -1,0 +1,138 @@
+
+menu.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+GameOver
+  rotate: false
+  xy: 1, 652
+  size: 512, 256
+  orig: 512, 256
+  offset: 0, 0
+  index: -1
+GameOverLoser
+  rotate: false
+  xy: 1, 394
+  size: 512, 256
+  orig: 512, 256
+  offset: 0, 0
+  index: -1
+GameOverWinner
+  rotate: false
+  xy: 1, 136
+  size: 512, 256
+  orig: 512, 256
+  offset: 0, 0
+  index: -1
+roundA
+  rotate: false
+  xy: 515, 775
+  size: 133, 133
+  orig: 133, 133
+  offset: 0, 0
+  index: -1
+roundAglass
+  rotate: false
+  xy: 1, 1
+  size: 133, 133
+  orig: 133, 133
+  offset: 0, 0
+  index: -1
+roundAglassOLD
+  rotate: false
+  xy: 515, 640
+  size: 133, 133
+  orig: 133, 133
+  offset: 0, 0
+  index: -1
+roundAglassZoom
+  rotate: false
+  xy: 650, 775
+  size: 133, 133
+  orig: 133, 133
+  offset: 0, 0
+  index: -1
+roundAhelp
+  rotate: false
+  xy: 136, 1
+  size: 133, 133
+  orig: 133, 133
+  offset: 0, 0
+  index: -1
+roundAinfo
+  rotate: false
+  xy: 515, 505
+  size: 133, 133
+  orig: 133, 133
+  offset: 0, 0
+  index: -1
+roundApause
+  rotate: false
+  xy: 650, 640
+  size: 133, 133
+  orig: 133, 133
+  offset: 0, 0
+  index: -1
+roundAplay
+  rotate: false
+  xy: 785, 775
+  size: 133, 133
+  orig: 133, 133
+  offset: 0, 0
+  index: -1
+roundAresize1
+  rotate: false
+  xy: 271, 1
+  size: 133, 133
+  orig: 133, 133
+  offset: 0, 0
+  index: -1
+roundAresize2
+  rotate: false
+  xy: 515, 370
+  size: 133, 133
+  orig: 133, 133
+  offset: 0, 0
+  index: -1
+roundAsetpos2
+  rotate: false
+  xy: 515, 370
+  size: 133, 133
+  orig: 133, 133
+  offset: 0, 0
+  index: -1
+roundAsetpos
+  rotate: false
+  xy: 650, 505
+  size: 133, 133
+  orig: 133, 133
+  offset: 0, 0
+  index: -1
+roundAsetpos1
+  rotate: false
+  xy: 785, 640
+  size: 133, 133
+  orig: 133, 133
+  offset: 0, 0
+  index: -1
+roundAsoundOFF
+  rotate: false
+  xy: 515, 235
+  size: 133, 133
+  orig: 133, 133
+  offset: 0, 0
+  index: -1
+roundAsoundON
+  rotate: false
+  xy: 650, 370
+  size: 133, 133
+  orig: 133, 133
+  offset: 0, 0
+  index: -1
+roundByeAndroid
+  rotate: false
+  xy: 785, 505
+  size: 133, 133
+  orig: 133, 133
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,88 @@
+guerreiraS_W_E_N_210x280.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+South01
+  rotate: false
+  xy: 0, 0
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1
+South02
+  rotate: false
+  xy: 70, 0
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1
+South03
+  rotate: false
+  xy: 140, 0
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1
+West01
+  rotate: false
+  xy: 0, 70
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1
+West02
+  rotate: false
+  xy: 70, 70
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1
+West03
+  rotate: false
+  xy: 140, 70
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1
+East01
+  rotate: false
+  xy: 0, 140
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1
+East02
+  rotate: false
+  xy: 70, 140
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1
+East03
+  rotate: false
+  xy: 140, 140
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1
+North01
+  rotate: false
+  xy: 0, 210
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1
+North02
+  rotate: false
+  xy: 70, 210
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1
+North03
+  rotate: false
+  xy: 140, 210
+  size: 70, 70
+  orig: 0, 0
+  offset: 0, 0
+  index: -1

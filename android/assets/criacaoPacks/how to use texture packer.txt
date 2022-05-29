@@ -1,0 +1,4 @@
+run gdx-texturepacker by double clicking on it
+choose + (new pack)
+choose pack dir both as input and output i.e. "pack"
+click Pack'em all
