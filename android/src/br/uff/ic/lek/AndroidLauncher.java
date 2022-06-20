@@ -1,5 +1,7 @@
 package br.uff.ic.lek;
 
+import com.onesignal.OneSignal;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -113,10 +115,17 @@ public class AndroidLauncher extends AndroidApplication {
 	}
 
 
-
+	private static final String ONESIGNAL_APP_ID = "d06439fa-9266-4d7e-bf02-cd647b4775cc";
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		// Enable verbose OneSignal logging to debug issues if needed.
+		OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
+
+		// OneSignal Initialization
+		OneSignal.initWithContext(this);
+		OneSignal.setAppId(ONESIGNAL_APP_ID);
 
 		defaultAccountGenerator();
 		Log.d(TAG, "################ playerNickName=<"+playerNickName+">################");
