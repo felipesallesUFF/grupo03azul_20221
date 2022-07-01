@@ -22,11 +22,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.Query;
 
-// para espelhar a tela de seu celular no Ubuntu
-// https://diolinux.com.br/tutoriais/espelhe-tela-do-seu-android-no-seu-linux-com-o-scrcpy.html
 public class AndroidInterfaceClass extends Activity implements InterfaceAndroidFireBase {
     public static final boolean debugFazPrimeiraVez = false;
-// 0dc3nzCSCyP8rxpMY8pz7s83Q3F2
     FirebaseDatabase database;
     DatabaseReference myRef;
     DatabaseReference myRefInicial;
@@ -43,7 +40,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
     private static final String TAG = "JOGO";
     // [START declare_auth]
     private FirebaseAuth mAuth;
-    // [END declare_auth]
+    // [END declare_auth
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -174,7 +171,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
         this.playerNickName = playerNickName;
         this.runningTimes = runningTimes;
         Log.d(TAG, "construtor AndroidInterfaceClass execucoes:" +runningTimes+ " playerNickName="+playerNickName+" emailCRC32="+emailCRC32+" pwdCRC32="+pwdCRC32);
-
+         
         //FirebaseAuth.getInstance().signOut();// comentar
         // para que o email não seja só um número identifico
         // no email e na senha o pm ou periodic memory
