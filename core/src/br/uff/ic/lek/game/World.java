@@ -57,7 +57,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
-
+import java.util.Random;//para poder ramdomizar o valor de uma variável
 // see https://libgdx.com/dev/tools/
 
 
@@ -256,7 +256,20 @@ public class World {
         // https://gamefromscratch.com/tiled-map-editor-tutorial-series/
         //
 
-        this.map = new TmxMapLoader().load("maps/alchemy.tmx");
+        //criar variável do tipo Random para poder escolher um mapa diferente
+        Random gerador = new Random();
+        //dependendo do valor da variável help o mapa carregado/escolhido será diferente.Ela pode assumir
+        //o valor 0,1 ou 2.
+        int help = gerador.nextInt(3);
+        if(help == 0){
+            this.map = new TmxMapLoader().load("maps/mapa1/alchemy.tmx");
+        }
+        if(help == 1){
+            this.map = new TmxMapLoader().load("maps/mapa2/alchemy.tmx");
+        }
+        if(help == 2){
+            this.map = new TmxMapLoader().load("maps/mapa3/alchemy.tmx");
+        }
         //this.map = new TmxMapLoader().load("maps/all.tmx");
         //this.map.getLayers().get("Collision").setVisible(true);// mostra ou não os tiles de colisao
         World.bounds = new ArrayList<Rectangle>();
