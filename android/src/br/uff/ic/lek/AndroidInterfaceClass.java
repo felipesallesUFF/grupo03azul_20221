@@ -578,6 +578,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                     HashMap<String, Object> chosenRoom = new HashMap<>();
                     String chosenRoomID = "";
 
+
                     if(task.getResult().exists()){
                         for(DataSnapshot room : resData){
                             chosenRoom = (HashMap<String, Object>) room.getValue();
@@ -588,7 +589,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
 
                         //Atualizar instancia de sala atual
                         newRoom.setRoomID(chosenRoomID);
-                        newRoom.setFull((Boolean) chosenRoom.get("isFull"));
+                        newRoom.setIsFull((Boolean) chosenRoom.get("isFull"));
                         newRoom.setLimit((Long) chosenRoom.get("limit"));
                         newRoom.setNumberOfConnectedPlayers((Long) chosenRoom.get("numberOfConnectedPlayers"));
 
@@ -602,10 +603,10 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
 
                         chosenRoomRef.child("numberOfConnectedPlayers").setValue(newRoom.getNumberOfConnectedPlayers() + 1);
                     } else {
-                        Log.d("Search Rooms", "Creating new Room:");
+                        Log.d("Search Rooms", "Room not found, creating new Room:");
                         newRoom.setLimit(4L);
                         newRoom.setNumberOfConnectedPlayers(1L);
-                        newRoom.setFull(false);
+                        newRoom.setIsFull(false);
                         roomsRef.push().setValue(newRoom);
                     }
                 }

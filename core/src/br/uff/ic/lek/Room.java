@@ -66,11 +66,11 @@ public class Room {
         this.numberOfConnectedPlayers = numberOfConnectedPlayers;
     }
 
-    public Boolean getFull() {
+    public Boolean getIsFull() {
         return isFull;
     }
 
-    public void setFull(Boolean full) {
-        isFull = full;
+    public void setIsFull(Boolean isFull) {
+        this.isFull = isFull;
     }
 }
