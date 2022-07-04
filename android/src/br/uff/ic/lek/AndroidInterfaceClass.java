@@ -560,6 +560,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
 
     @Override
     public Room searchForAvailableRooms(){
+        //* Falta configurar lista de players em cada sala
         Room newRoom = new Room();
 
         DatabaseReference roomsRef = database.getReference("rooms");
@@ -569,17 +570,44 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                 if (!task.isSuccessful()) {
                     Log.e("Search Rooms", "Error getting data", task.getException());
                 } else {
+
                     Iterable<DataSnapshot> resData = task.getResult().getChildren();
+
                     Log.d("Search Rooms", String.valueOf(task.getResult().getValue()));
 
-                    HashMap<String, Object> chosenRoom;
-                    for(DataSnapshot room : resData){
-                        chosenRoom = (HashMap<String, Object>) room.getValue();
-                        Log.d("Search Rooms", "Chosen Room:" + String.valueOf(String.valueOf(chosenRoom)));
-                        break;
-                    }
+                    HashMap<String, Object> chosenRoom = new HashMap<>();
+                    String chosenRoomID = "";
 
-                    //Após uma sala ser escolhida, conectar o jogador a sala
+                    if(task.getResult().exists()){
+                        for(DataSnapshot room : resData){
+                            chosenRoom = (HashMap<String, Object>) room.getValue();
+                            chosenRoomID = room.getKey();
+                            Log.d("Search Rooms", "Chosen Room:" + String.valueOf(room.getKey()) + ": " + String.valueOf(String.valueOf(chosenRoom)));
+                            break;
+                        }
+
+                        //Atualizar instancia de sala atual
+                        newRoom.setRoomID(chosenRoomID);
+                        newRoom.setFull((Boolean) chosenRoom.get("isFull"));
+                        newRoom.setLimit((Long) chosenRoom.get("limit"));
+                        newRoom.setNumberOfConnectedPlayers((Long) chosenRoom.get("numberOfConnectedPlayers"));
+
+
+                        //Após uma sala ser escolhida, atualizar instância de sala no firebase
+                        DatabaseReference chosenRoomRef = roomsRef.child(chosenRoomID);
+
+                        if(newRoom.getNumberOfConnectedPlayers() == newRoom.getLimit() - 1){
+                            chosenRoomRef.child("isFull").setValue(true);
+                        }
+
+                        chosenRoomRef.child("numberOfConnectedPlayers").setValue(newRoom.getNumberOfConnectedPlayers() + 1);
+                    } else {
+                        Log.d("Search Rooms", "Creating new Room:");
+                        newRoom.setLimit(4L);
+                        newRoom.setNumberOfConnectedPlayers(1L);
+                        newRoom.setFull(false);
+                        roomsRef.push().setValue(newRoom);
+                    }
                 }
             }
         });

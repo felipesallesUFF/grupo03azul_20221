@@ -29,10 +29,9 @@ import java.util.ArrayList;
 
 public class Room {
     String roomID;
-    Boolean isConnectedToARoom;
-    ArrayList<String> connectedPlayers;
-    Integer limit;
-    Integer numberOfConnectedPlayers;
+    ArrayList<String> connectedPlayersIDs;
+    Long limit;
+    Long numberOfConnectedPlayers;
     Boolean isFull;
     
     public String getRoomID() {
@@ -43,35 +42,27 @@ public class Room {
         this.roomID = roomID;
     }
 
-    public void setConnectedStatus(Boolean isConnectedToARoom){
-        this.isConnectedToARoom = isConnectedToARoom;
+    public ArrayList<String> getconnectedPlayersIDs() {
+        return connectedPlayersIDs;
     }
 
-    public Boolean getConnectedStatus(){
-        return isConnectedToARoom;
+    public void setconnectedPlayersIDs(ArrayList<String> connectedPlayersIDs) {
+        this.connectedPlayersIDs = connectedPlayersIDs;
     }
 
-    public ArrayList<String> getConnectedPlayers() {
-        return connectedPlayers;
-    }
-
-    public void setConnectedPlayers(ArrayList<String> connectedPlayers) {
-        this.connectedPlayers = connectedPlayers;
-    }
-
-    public Integer getLimit() {
+    public Long getLimit() {
         return limit;
     }
 
-    public void setLimit(Integer limit) {
+    public void setLimit(Long limit) {
         this.limit = limit;
     }
 
-    public Integer getNumberOfConnectedPlayers() {
+    public Long getNumberOfConnectedPlayers() {
         return numberOfConnectedPlayers;
     }
 
-    public void setNumberOfConnectedPlayers(Integer numberOfConnectedPlayers) {
+    public void setNumberOfConnectedPlayers(Long numberOfConnectedPlayers) {
         this.numberOfConnectedPlayers = numberOfConnectedPlayers;
     }
 
