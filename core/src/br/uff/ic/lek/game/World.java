@@ -256,7 +256,7 @@ public class World {
         // https://gamefromscratch.com/tiled-map-editor-tutorial-series/
         //
 
-        /*
+
         //criar variável do tipo Random para poder escolher um mapa diferente
         Random gerador = new Random();
         //dependendo do valor da variável help o mapa carregado/escolhido será diferente.Ela pode assumir
@@ -269,9 +269,9 @@ public class World {
             this.map = new TmxMapLoader().load("maps/mapa2/alchemy.tmx");
         }
         if(help == 2){
-            this.map = new TmxMapLoader().load("maps/mapa3/alchemy.tmx");
-        }*/
-        this.map = new TmxMapLoader().load("maps/mapa2/alchemy.tmx");
+            this.map = new TmxMapLoader().load("maps/mapa1/alchemy.tmx");
+            //this.map = new TmxMapLoader().load("maps/mapa3/alchemy.tmx");
+        }
         //this.map = new TmxMapLoader().load("maps/all.tmx");
         //this.map.getLayers().get("Collision").setVisible(true);// mostra ou não os tiles de colisao
         World.bounds = new ArrayList<Rectangle>();
