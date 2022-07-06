@@ -29,9 +29,9 @@ public class Alquimia extends Game  implements ApplicationListener{
 		ClassThreadComandos.objetoAndroidFireBase = objetoAndroidFireBase;
 		// Thread para receber os comandos do Firebase
 		ClassThreadComandos.produtorConsumidor = new ClassThreadComandos(this);
-		objetoAndroidFireBase.chooseSpecificRoom("-N6HHQpMSWjuze8AhRyq");
+		//objetoAndroidFireBase.chooseSpecificRoom("-N6HHQpMSWjuze8AhRyq");
 		//objetoAndroidFireBase.searchForAvailableRooms();
-		objetoAndroidFireBase.disconnectFromRoom();
+		//objetoAndroidFireBase.disconnectFromRoom();
 	}
 
 	public Alquimia() {

@@ -386,7 +386,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                         Log.e("Set isConnectedToARoom", "Error getting data", task.getException());
                     } else {
                         if(task.getResult().exists()){
-                            Log.d("Set isConnectedToARoom", String.valueOf(task.getResult().getValue()));
+                            Log.d("Set isConnectedToARoom", "Existe: " + String.valueOf(task.getResult().getValue()));
 
                             HashMap<String, Object> playerHashMap = new HashMap<>();
                             playerHashMap = (HashMap<String, Object>) task.getResult().getValue();
@@ -402,12 +402,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                             } else {
                                 pd.setConnectedRoomID((String) playerHashMap.get("connectedRoomID"));
                             }
-                        } else {
-                            pd.setIsConnectedToARoom(false);
-                            pd.setConnectedRoomID("");
                         }
-
-
                     }
 
                     if (newAccount){
@@ -427,21 +422,6 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
 
                 }
             });
-
-            if (newAccount){
-                Log.d(TAG, "CONTA NOVA:" + pd.getRegistrationTime());
-                myRef.setValue(pd);
-                myRefInicial.setValue(pd);
-            } else {
-                Log.d(TAG, "CONTA EXISTENTE:" + pd.getRegistrationTime());
-                myRef.setValue(pd);
-            }
-            if (fazSoUmaVez == 0){
-                fazSoUmaVez++;
-                // qualquer alteração em player->uID será notificada
-                //SetOnValueChangedListener();
-            }
-            Log.d(TAG," fazSoUmaVez:"+fazSoUmaVez);
         }
     }
     private int fazSoUmaVez=0;
@@ -514,7 +494,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                 if (!task.isSuccessful()) {
                     Log.e("Sincronize local Room", "Error getting data", task.getException());
                 } else {
-                    Log.d("Sincronize local Room", String.valueOf(task.getResult().getValue()));
+                    Log.d("Sincronize local Room", "testePrimeiro: " + String.valueOf(task.getResult().getValue()));
 
                     HashMap<String, Object> playerHashMap = new HashMap<>();
                     playerHashMap = (HashMap<String, Object>) task.getResult().getValue();
@@ -531,6 +511,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                         pd.setConnectedRoomID((String) playerHashMap.get("connectedRoomID"));
                     }
 
+                    Log.d("Disconnect from room", "teste: " + String.valueOf(pd.getIsConnectedToARoom()));
                     //Testar se está connectado
                     if(pd.getIsConnectedToARoom()){
                         Room room = Room.myRoom();
