@@ -484,14 +484,28 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                                             Log.d("Search Rooms", "Chosen Room:" + String.valueOf(room.getKey()) + ": " + String.valueOf(String.valueOf(chosenRoom)));
                                             break;
                                         }
+                                        ArrayList<String> IDsArray = (ArrayList<String>) chosenRoom.get("connectedPlayersIDs");
+                                        //Adicionar seu ID a lista, se não estiver contido
+                                        int i = 0;
+                                        Boolean jaEstaContido = false;
+                                        while (i < IDsArray.size()){
+                                            if(IDsArray.get(i) == currentUser.getUid()){
+                                                jaEstaContido = true;
+                                            }
+                                            i++;
+                                        }
+
+                                        if(!jaEstaContido){
+                                            IDsArray.add(currentUser.getUid());
+                                        }
+
 
                                         //Atualizar instancia de sala local
-                                        newRoom.setconnectedPlayersIDs((ArrayList<String>) chosenRoom.get("connectedPlayersIDs"));
+                                        newRoom.setconnectedPlayersIDs(IDsArray);
                                         newRoom.setRoomID(chosenRoomID);
                                         newRoom.setIsFull((Boolean) chosenRoom.get("isFull"));
                                         newRoom.setLimit((Long) chosenRoom.get("limit"));
                                         newRoom.setNumberOfConnectedPlayers((Long) chosenRoom.get("numberOfConnectedPlayers"));
-
 
                                         //Após uma sala ser escolhida, atualizar instância de sala no firebase
                                         DatabaseReference chosenRoomRef = roomsRef.child(chosenRoomID);
@@ -501,6 +515,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                                         }
 
                                         chosenRoomRef.child("numberOfConnectedPlayers").setValue(newRoom.getNumberOfConnectedPlayers() + 1);
+                                        chosenRoomRef.child("connectedPlayersIDs").setValue(newRoom.getconnectedPlayersIDs());
                                     } else {
                                         Log.d("Search Rooms", "Room not found, creating new Room:");
                                         newRoom.setLimit(4L);
