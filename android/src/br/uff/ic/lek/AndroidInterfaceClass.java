@@ -421,6 +421,21 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
 
                 }
             });
+
+            if (newAccount){
+                Log.d(TAG, "CONTA NOVA:" + pd.getRegistrationTime());
+                myRef.setValue(pd);
+                myRefInicial.setValue(pd);
+            } else {
+                Log.d(TAG, "CONTA EXISTENTE:" + pd.getRegistrationTime());
+                myRef.setValue(pd);
+            }
+            if (fazSoUmaVez == 0){
+                fazSoUmaVez++;
+                // qualquer alteração em player->uID será notificada
+                //SetOnValueChangedListener();
+            }
+            Log.d(TAG," fazSoUmaVez:"+fazSoUmaVez);
         }
     }
     private int fazSoUmaVez=0;
@@ -546,7 +561,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                                     room.setconnectedPlayersIDs(connectedPlayersIDsArray);
                                     room.setIsFull(false);
                                     room.setNumberOfConnectedPlayers((Long) roomHashMap.get("numberOfConnectedPlayers") - 1);
-                                    room.setLimit((Long) roomHashMap.get("numberOfConnectedPlayers"));
+                                    room.setLimit((Long) roomHashMap.get("limit"));
 
                                     pd.setIsConnectedToARoom(false);
                                     pd.setConnectedRoomID("");
