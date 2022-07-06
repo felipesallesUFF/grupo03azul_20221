@@ -60,6 +60,7 @@ public class PlayerData {
     String stateAndLastTime;
     int runningTimes;
     String avatarType;
+    Boolean isConnectedToARoom;
 
     public String getAvatarType() {
         return avatarType;

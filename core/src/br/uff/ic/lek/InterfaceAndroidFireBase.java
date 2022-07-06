@@ -17,6 +17,7 @@ package br.uff.ic.lek;
 
 public interface InterfaceAndroidFireBase {
     void setLibGDXScreen(InterfaceLibGDX libGDXScreen);
+    Room searchForAvailableRooms();
     void writePlayerData();
     void waitForMyMessages();
     void waitForPlayers();
