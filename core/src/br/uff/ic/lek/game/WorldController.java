@@ -14,6 +14,7 @@
 
  */
 package br.uff.ic.lek.game;
+import br.uff.ic.lek.actors.Player;
 
 import br.uff.ic.lek.actors.Avatar;
 import br.uff.ic.lek.actors.Avatar.State;
@@ -24,10 +25,14 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class WorldController implements InputProcessor {
 
     private World world;
     private Avatar avatar;
+    private ArrayList<Avatar> avatars;
     private OrthographicCamera camera;
     float minCameraX;
     float maxCameraX;
@@ -46,11 +51,13 @@ public class WorldController implements InputProcessor {
     public WorldController(World world) {
         this.world = world;
         this.avatar = this.world.getAvatar();
+        this.avatars = this.world.getAvatars();
         this.camera = this.world.getCamera();
     }
 
     public void update(float delta) {
-        this.avatar.update(delta);
+        //this.avatar.update(delta);
+        this.updateAvatars(delta);
         this.minCameraX = this.camera.zoom * (this.camera.viewportWidth / 2);
         this.maxCameraX = World.getMapWidthPixel() - minCameraX;
         this.minCameraY = camera.zoom * (this.camera.viewportHeight / 2);
@@ -261,6 +268,25 @@ public class WorldController implements InputProcessor {
     @Override
     public boolean scrolled(float amountX, float amountY) {
         return false;
+    }
+
+    private void updateAvatars(float delta) {
+        for(Avatar avatar : this.avatars) {
+            avatar.update(delta);
+        }
+    }
+
+    public void onNotification(HashMap<String,String> cmdData) {
+        for (Avatar player : this.avatars) {
+            if (player.getAuthUID() == cmdData.get("uID")) {
+                if (cmdData.get("cmd") == "MOVE") {
+                    player.setPosition(
+                            Float.parseFloat(cmdData.get("px")),
+                            Float.parseFloat(cmdData.get("py"))
+                    );
+                }
+            }
+        }
     }
 
 

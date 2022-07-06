@@ -81,6 +81,8 @@ public class World {
     public InputMultiplexer inputMultiplexer; // LEKNEW
     public static int avatarStartTileX;
     public static int avatarStartTileY;
+    private ArrayList<Avatar> avatars = new ArrayList<Avatar>();
+
 
     public static void load() {
         if (world==null) // singleton, just one World instance
@@ -197,6 +199,12 @@ public class World {
         mensagem = "debug";
         World.world.getAvatar().draw(camera, font, mensagem, this.tiledMapRender.getBatch());
         this.tiledMapRender.getBatch().end();
+
+        for (Avatar avatar : this.avatars) {
+            this.tiledMapRender.getBatch().begin();
+            avatar.draw(camera, font, "teste", this.tiledMapRender.getBatch());
+            this.tiledMapRender.getBatch().end();
+        }
 
         float x = World.world.getAvatar().getX() + World.world.getAvatar().getWidth();
         float y = World.world.getAvatar().getY() + World.world.getAvatar().getHeight();
@@ -320,8 +328,11 @@ public class World {
         // e authUID. A coleção de avatares deverá ser tratada e deverá refletir
         // por parsing  as mensagens recebidas do(s) outro(s) jogador(es)
         // no mesmo ambiente
-        this.avatar = new Avatar(new Sprite(World.atlasPlayerS_W_E_N.findRegion("South02")), (avatarStartTileX)*World.tileWidth, avatarStartTileY*World.tileHeight, PlayerData.myPlayerData().getAuthUID());
 
+        this.avatar = new Avatar(new Sprite(World.atlasPlayerS_W_E_N.findRegion("South02")), (avatarStartTileX)*World.tileWidth, avatarStartTileY*World.tileHeight, PlayerData.myPlayerData().getAuthUID());
+        this.avatars.add(this.avatar);
+
+        //Avatars online
         World.camera = new OrthographicCamera(this.avatar.getX(), this.avatar.getY());
         World.camera.zoom = 0.5f;
         //Gdx.app.log(" ", "Camera created!");
@@ -351,6 +362,13 @@ public class World {
         return avatar;
     }
 
+    public ArrayList<Avatar> getAvatars() {
+        return avatars;
+    }
+
+    public void setAvatars(ArrayList<Avatar> avatars) {
+        this.avatars = avatars;
+    }
 
     public OrthographicCamera getCamera() {
         return World.camera;
@@ -378,6 +396,7 @@ class CameraController implements GestureDetector.GestureListener {
         flinging = false;
         initialScale = World.camera.zoom;
         Gdx.app.log("botao", "touchdown at " + x + ", " + y);
+
         //if(ClassGame.gameState == ClassGame.GAME_OVER){
         //    ClassGame.returnMenuState();
         //}

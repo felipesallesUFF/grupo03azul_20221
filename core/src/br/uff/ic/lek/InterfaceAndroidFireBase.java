@@ -15,13 +15,15 @@
  */
 package br.uff.ic.lek;
 
+import br.uff.ic.lek.actors.Avatar;
+
 public interface InterfaceAndroidFireBase {
     void setLibGDXScreen(InterfaceLibGDX libGDXScreen);
     void chooseSpecificRoom(String newRoomID);
     void sincronizeLocalRoom();
     void searchForAvailableRooms();
     void disconnectFromRoom();
-    void writePlayerData();
+    void writePlayerData(Avatar player);
     void waitForMyMessages();
     void waitForPlayers();
     void finishAndRemoveTask();

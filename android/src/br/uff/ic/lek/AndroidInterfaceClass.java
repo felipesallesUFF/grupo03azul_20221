@@ -25,6 +25,8 @@ import com.google.firebase.database.Query;
 import java.util.*;
 import java.util.*;
 
+import br.uff.ic.lek.actors.Avatar;
+
 public class AndroidInterfaceClass extends Activity implements InterfaceAndroidFireBase {
     public static final boolean debugFazPrimeiraVez = false;
     FirebaseDatabase database;
@@ -314,32 +316,10 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
 
 
     @Override
-    public void writePlayerData(){
+    public void writePlayerData(Avatar player){
         Log.d(TAG, "******** writePlayerData");
-        // definir seu dados no Realtime Database com dados de usuario logado
-        PlayerData pd = PlayerData.myPlayerData();// singleton
-        pd.setAuthUID(uID);
-        pd.setWriterUID(uID);
-        pd.setGameState(PlayerData.States.READYTOPLAY);
-        pd.setChat("empty"); // LEK todo: mudar para uma constante melhor
-        pd.setCmd("{cmd:READYTOPLAY,px:1.1,py:2.2,pz:3.3,cardNumber:4,uID:"+uID+"}"); // LEK todo: mudar para uma constante melhor
-        pd.setAvatarType("A");
-        Log.d(TAG,"READYTOPLAY");
-        pd.setPlayerNickName(playerNickName);
-        pd.setEmail(email);
-        Calendar calendar = Calendar.getInstance();
-        java.util.Date now = calendar.getTime();
-        java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
-        pd.setTimestamp(currentTimestamp);
-        pd.setLastUpdateTime("" + now.getTime());
-        pd.setRegistrationTime("" + now.getTime());
-        pd.setStateAndLastTime(pd.getGameState()+"_"+pd.getLastUpdateTime());
-        pd.setRunningTimes(this.runningTimes);
-        Log.d(TAG, "local timestamp:" + currentTimestamp.toString());
-        Log.d(TAG, "System timestamp:" + System.currentTimeMillis());
-
-        myRef = database.getReference("players").child(uID);
-        myRef.setValue(pd);
+        myRef = database.getReference("players").child(player.getAuthUID());
+        myRef.setValue(player.sincFirebaseData());
     }
 
     // operação para escrever dados iniciais para o próprio usuário

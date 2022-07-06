@@ -124,7 +124,9 @@ public class ClassCommandButton extends ClassActorAccessor {
 
             public boolean executouUmaVez = false;
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+//                ClassThreadComandos.objetoAndroidFireBase.writePlayerData(avatar);
                 Gdx.app.log("botao", "touchDown " + x + ", " + y + " acao"+action);
+
                 ClassCommandButton.acaoAtual = action;
                 if(action == ClassCommandButton.BT_RESIZE) {
                     /* LEK
@@ -175,8 +177,7 @@ public class ClassCommandButton extends ClassActorAccessor {
                         // LEK */
                     } else if(action == ClassCommandButton.BT_HELP) {
                         //* LEK
-
-                        ClassThreadComandos.objetoAndroidFireBase.writePlayerData();
+                        //ClassThreadComandos.objetoAndroidFireBase.writePlayerData();
                         Color backgroundColor = new Color(0f, 0f, 0f, 0.5f);
                         Color fontColor = new Color(1, 1, 0, 0.5f);
                         String msg = "Apenas grava dados do jogador. Verifique como outros smartphones tambem executando sao afetados";

@@ -22,6 +22,8 @@ O módulo deve ser melhorado para representar os demais jogadores da versão mul
  */
 package br.uff.ic.lek.actors;
 
+import br.uff.ic.lek.PlayerData;
+import br.uff.ic.lek.game.ClassThreadComandos;
 import br.uff.ic.lek.game.World;
 import br.uff.ic.lek.game.WorldController;
 import com.badlogic.gdx.Gdx;
@@ -297,7 +299,6 @@ public class Avatar extends Sprite {
 
         //Touch movement
         if(WorldController.clicado) {
-            //Gdx.app.log("Player ", " clicado x="+this.getX() + " y="+this.getY());
             if(houveColisao == false){
                 //current.lerp(new Vector3(WorldController.target.x, WorldController.target.y, 0), 0.005f/world.getCamera().zoom);
                 double distancia = Math.sqrt((current.x - WorldController.target.x)*(current.x - WorldController.target.x) + (current.y - WorldController.target.y)*(current.y - WorldController.target.y));
@@ -320,9 +321,12 @@ public class Avatar extends Sprite {
                 current.y = (float) posy;
                 this.setPosition(current.x, current.y);
                 this.setState(State.WALKING);
+                //Gdx.app.log("Player ", "Movendo jogador");
             }
             if(this.current.dst(WorldController.target.x, WorldController.target.y, 0) < 32/2) {
                 WorldController.clicado = false;
+                //Mandar posição para o firebase
+                ClassThreadComandos.objetoAndroidFireBase.writePlayerData(this);
                 this.setState(State.IDLE);
             }
         }
@@ -483,6 +487,30 @@ public class Avatar extends Sprite {
 
     public Vector3 getVelocity() {
         return velocity;
+    }
+
+    public PlayerData sincFirebaseData() {
+        PlayerData pd = PlayerData.myPlayerData();
+        pd.setAuthUID(this.authUID);
+        pd.setWriterUID(this.authUID);
+        pd.setGameState(PlayerData.States.READYTOPLAY);
+        pd.setChat("empty");
+
+        class CmdObject {
+            private String command;
+
+            public CmdObject(Float px, Float py,String event){
+                this.command = "{cmd:"+event+",px:"+ px +",py:"+py+"}";
+            }
+
+            public String getCommand() {
+                return this.command;
+            }
+        };
+
+        pd.setCmd(new CmdObject(this.getX(),this.getY(),"Question").getCommand());
+        pd.setAvatarType("A");
+        return pd;
     }
 
 
