@@ -444,9 +444,121 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
         this.finishAndRemoveTask();
     }
 
+    //Função para atualizar instância local de room
+    @Override
+    public void sincronizeLocalRoom(){
+        PlayerData pd = PlayerData.myPlayerData();
+
+        DatabaseReference pdRef = database.getReference("players").child(uID);
+
+        pdRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Log.e("Sincronize local Room", "Error getting data", task.getException());
+                } else {
+                    Log.d("Sincronize local Room", String.valueOf(task.getResult().getValue()));
+
+                    HashMap<String, Object> playerHashMap = new HashMap<>();
+                    playerHashMap = (HashMap<String, Object>) task.getResult().getValue();
+
+                    if((Boolean) playerHashMap.get("isConnectedToARoom") == null){
+                        pd.setIsConnectedToARoom(false);
+                    } else {
+                        pd.setIsConnectedToARoom((Boolean) playerHashMap.get("isConnectedToARoom"));
+                    }
+
+                    if((String) playerHashMap.get("connectedRoomID") == null){
+                        pd.setConnectedRoomID("");
+                    } else {
+                        pd.setConnectedRoomID((String) playerHashMap.get("connectedRoomID"));
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void disconnectFromRoom(){
+        PlayerData pd = PlayerData.myPlayerData();
+        DatabaseReference pdRef = database.getReference("players").child(uID);
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+
+        pdRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Log.e("Sincronize local Room", "Error getting data", task.getException());
+                } else {
+                    Log.d("Sincronize local Room", String.valueOf(task.getResult().getValue()));
+
+                    HashMap<String, Object> playerHashMap = new HashMap<>();
+                    playerHashMap = (HashMap<String, Object>) task.getResult().getValue();
+
+                    if((Boolean) playerHashMap.get("isConnectedToARoom") == null){
+                        pd.setIsConnectedToARoom(false);
+                    } else {
+                        pd.setIsConnectedToARoom((Boolean) playerHashMap.get("isConnectedToARoom"));
+                    }
+
+                    if((String) playerHashMap.get("connectedRoomID") == null){
+                        pd.setConnectedRoomID("");
+                    } else {
+                        pd.setConnectedRoomID((String) playerHashMap.get("connectedRoomID"));
+                    }
+
+                    if(pd.getIsConnectedToARoom()){
+                        Room room = Room.myRoom();
+                        DatabaseReference roomRef = database.getReference("rooms").child(pd.getConnectedRoomID());
+
+                        roomRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                            ArrayList<String> connectedPlayersIDsArray = new ArrayList<String>();
+
+                            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                if (!task.isSuccessful()) {
+                                    Log.e("Disconnect from room", "Error getting data", task.getException());
+                                } else {
+                                    Log.d("Disconnect from room", String.valueOf(task.getResult().getValue()));
+
+                                    HashMap<String, Object> roomHashMap = new HashMap<>();
+                                    roomHashMap = (HashMap<String, Object>) task.getResult().getValue();
+
+                                    connectedPlayersIDsArray = (ArrayList<String>) roomHashMap.get("connectedPlayersIDs");
+                                    Log.d("Disconnect from room", "Array: " + String.valueOf(connectedPlayersIDsArray));
+
+                                    int index = 0;
+                                    for (int i = 0; i < connectedPlayersIDsArray.size(); i++) {
+                                        if(connectedPlayersIDsArray.get(i) == currentUser.getUid()){
+                                            index = i;
+                                            break;
+                                        }
+                                    }
+
+                                    connectedPlayersIDsArray.remove(index);
+                                    room.setconnectedPlayersIDs(connectedPlayersIDsArray);
+                                    room.setIsFull(false);
+                                    room.setNumberOfConnectedPlayers((Long) roomHashMap.get("numberOfConnectedPlayers") - 1);
+                                    room.setLimit((Long) roomHashMap.get("numberOfConnectedPlayers"));
+
+                                    pd.setIsConnectedToARoom(false);
+                                    pd.setConnectedRoomID("");
+
+                                    //Atualizando objetos do firebase
+                                    Log.d("Disconnect from room", "UpdatedRoomObj: " + String.valueOf(room.toString()));
+                                    roomRef.setValue(room);
+                                    pdRef.setValue(pd);
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    }
+
     @Override
     public void searchForAvailableRooms(){
-        //* Falta configurar lista de players em cada sala
         PlayerData pd = PlayerData.myPlayerData();
         Room newRoom = Room.myRoom();
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -502,10 +614,15 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                                             break;
                                         }
                                         ArrayList<String> IDsArray = (ArrayList<String>) chosenRoom.get("connectedPlayersIDs");
+                                        if(IDsArray != null){
+                                            //Não é necessário testar se o ID do usuário está contido, já que essa parte do código só será rodado
+                                            //caso ele não esteja conectado a nenhuma sala
+                                            IDsArray.add(currentUser.getUid());
+                                        } else {
+                                            IDsArray = new ArrayList<String>();
+                                            IDsArray.add(currentUser.getUid());
+                                        }
 
-                                        //Não é necessário testar se o ID do usuário está contido, já que essa parte do código só será rodado
-                                        //caso ele não esteja conectado a nenhuma sala
-                                        IDsArray.add(currentUser.getUid());
 
 
                                         //Atualizar instancia de sala local
@@ -550,6 +667,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                 }
 
             }
+
         });
     }
 
