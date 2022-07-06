@@ -124,7 +124,6 @@ public class ClassCommandButton extends ClassActorAccessor {
 
             public boolean executouUmaVez = false;
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-//                ClassThreadComandos.objetoAndroidFireBase.writePlayerData(avatar);
                 Gdx.app.log("botao", "touchDown " + x + ", " + y + " acao"+action);
 
                 ClassCommandButton.acaoAtual = action;

@@ -259,57 +259,55 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
         });
     }
 
-
+    //Funcao para atualizar informações de players conectados, localmente
     @Override
     public void waitForPlayers(){
-        int ultimosUsuarios = 10;
-        DatabaseReference players = referencia.child("players");
-        // se você precisar de muitos campos de pesquisa, refaça a estrutura
-        // para criar um único campo composto da união de outros
-        // https://stackoverflow.com/questions/33336697/nosql-database-design-for-queries-with-multiple-restrictions-firebase
-        Query playerPesquisa = players.startAt("READYTOPLAY_-").endAt("READYTOPLAY_~").orderByChild("stateAndLastTime").limitToLast(ultimosUsuarios);
-        // see that: https://stackoverflow.com/questions/39076284/firebase-orderbykey-with-startat-and-endat-giving-wrong-results
+        PlayerData pd = PlayerData.myPlayerData();
+        //Primeiro esperar player se conectar
+        DatabaseReference player = referencia.child("player").child(pd.getAuthUID());
+        
+        DatabaseReference room = referencia.child("rooms").child(pd.getConnectedRoomID());
 
-        // ORDEM CRESCENTE: o último a chegar é o mais recente
-        // Unfortunately firebase doesn't allow returning by descending order
-        //
-        // see SQL vs FIREBASE https://www.youtube.com/watch?v=sKFLI5FOOHs&list=PLl-K7zZEsYLlP-k-RKFa7RyNPa9_wCH2s&index=5
-        playerPesquisa.addValueEventListener(new ValueEventListener() {
+        //Pegar IDs de players conectados na mesma sala apenas
+        room.child("connectedPlayersIDs").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot zoneSnapshot : dataSnapshot.getChildren()) {
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Log.e("Wait for players", "Error getting data", task.getException());
+                } else {
+                    Log.d("Wait for players", String.valueOf(task.getResult().getValue()));
 
-                    Log.d(TAG, "listener dos " + ultimosUsuarios + " users ordem lastUpdateTime " + zoneSnapshot.child("cmd").getValue() + " " + zoneSnapshot.child("lastUpdateTime").getValue());
-                    // TODO chamar funcao de interface implementada por LIBGDX e setada aqui
-                    //if ()
-                    //AndroidInterfaceClass.gameLibGDX.exibeLa(msg);
-                    if (AndroidInterfaceClass.gameLibGDX != null) {
-                        String registrationTime = "" + zoneSnapshot.child("registrationTime").getValue();
-                        String authUID = "" + zoneSnapshot.child("authUID").getValue();
-                        String cmd = "" + zoneSnapshot.child("cmd").getValue();
-                        String lastUpdateTime = "" + zoneSnapshot.child("lastUpdateTime").getValue();
-
-                        // pegar a data do update para eliminar o processamento em dobro ou mensagens duplicadas
-                        //TODO:LEK
-                        // Qual e´o problema a ser resolvido
-                        // quando entra um novo usuario
-                        // aparece as mensagens de todos os players
-                        // multiplicados por 4
-                        // se ha´2 users x4 --> 8 mensagens ou 4 pares
-                        // se ha 3 users x4 --> 12 mensagens ou 4 trios
-                        // a ideia eh eliminar o processamento de mensagens iguais
-                        // a cada WAITING processar só as 10 mais
-                        // recentes
-                        AndroidInterfaceClass.gameLibGDX.enqueueMessage(InterfaceLibGDX.ALL_PLAYERS_DATA, registrationTime, authUID, cmd, lastUpdateTime);
-                    }
                 }
             }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.i(TAG, "playerPesquisa.addValueEventListener onCancelled", databaseError.toException());
-            }
         });
+
+//        Query playerPesquisa = players.startAt("READYTOPLAY_-").endAt("READYTOPLAY_~").orderByChild("stateAndLastTime").limitToLast(ultimosUsuarios);
+//
+//        playerPesquisa.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                for (DataSnapshot zoneSnapshot : dataSnapshot.getChildren()) {
+//
+//                    Log.d(TAG, "listener dos " + ultimosUsuarios + " users ordem lastUpdateTime " + zoneSnapshot.child("cmd").getValue() + " " + zoneSnapshot.child("lastUpdateTime").getValue());
+//                    // TODO chamar funcao de interface implementada por LIBGDX e setada aqui
+//                    //if ()
+//                    //AndroidInterfaceClass.gameLibGDX.exibeLa(msg);
+//                    if (AndroidInterfaceClass.gameLibGDX != null) {
+//                        String registrationTime = "" + zoneSnapshot.child("registrationTime").getValue();
+//                        String authUID = "" + zoneSnapshot.child("authUID").getValue();
+//                        String cmd = "" + zoneSnapshot.child("cmd").getValue();
+//                        String lastUpdateTime = "" + zoneSnapshot.child("lastUpdateTime").getValue();
+//
+//                        AndroidInterfaceClass.gameLibGDX.enqueueMessage(InterfaceLibGDX.ALL_PLAYERS_DATA, registrationTime, authUID, cmd, lastUpdateTime);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Log.i(TAG, "playerPesquisa.addValueEventListener onCancelled", databaseError.toException());
+//            }
+//        });
 
 
     }
