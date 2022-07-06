@@ -60,10 +60,8 @@ public class PlayerData {
     String stateAndLastTime;
     int runningTimes;
     String avatarType;
-
-
-
     Boolean isConnectedToARoom;
+    String connectedRoomID;
 
     public String getAvatarType() {
         return avatarType;
@@ -205,5 +203,13 @@ public class PlayerData {
 
     public void setIsConnectedToARoom(Boolean connectedToARoom) {
         isConnectedToARoom = connectedToARoom;
+    }
+
+    public String getConnectedRoomID() {
+        return connectedRoomID;
+    }
+
+    public void setConnectedRoomID(String connectedRoomID) {
+        this.connectedRoomID = connectedRoomID;
     }
 }

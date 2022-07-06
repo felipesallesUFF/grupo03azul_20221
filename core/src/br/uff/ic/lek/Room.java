@@ -33,6 +33,19 @@ public class Room {
     Long limit;
     Long numberOfConnectedPlayers;
     Boolean isFull;
+
+    private static Room r=null;
+
+    private Room(){ // singleton
+    }
+
+    public static Room myRoom(){
+        if (Room.r == null){
+            Room.r = new Room();
+        }
+
+        return Room.r; // singleton = sempre a mesma instancia
+    }
     
     public String getRoomID() {
         return roomID;

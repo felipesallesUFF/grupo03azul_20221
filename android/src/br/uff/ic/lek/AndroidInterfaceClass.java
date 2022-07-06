@@ -379,7 +379,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
             myRef = database.getReference("players").child(uID);
             myRefInicial = database.getReference("playersData").child(uID);
             //Testar se está conectado ou não em uma sala
-            myRef.child("isConnectedToARoom").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            myRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
                     if (!task.isSuccessful()) {
@@ -387,10 +387,19 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                     } else {
                         Log.d("Set isConnectedToARoom", String.valueOf(task.getResult().getValue()));
 
-                        if(task.getResult().getValue() == null){
+                        HashMap<String, Object> playerHashMap = new HashMap<>();
+                        playerHashMap = (HashMap<String, Object>) task.getResult().getValue();
+
+                        if((Boolean) playerHashMap.get("isConnectedToARoom") == null){
                             pd.setIsConnectedToARoom(false);
                         } else {
-                            pd.setIsConnectedToARoom((Boolean) task.getResult().getValue());
+                            pd.setIsConnectedToARoom((Boolean) playerHashMap.get("isConnectedToARoom"));
+                        }
+
+                        if((String) playerHashMap.get("connectedRoomID") == null){
+                            pd.setConnectedRoomID("");
+                        } else {
+                            pd.setConnectedRoomID((String) playerHashMap.get("connectedRoomID"));
                         }
 
                     }
@@ -436,17 +445,17 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
     }
 
     @Override
-    public Room searchForAvailableRooms(){
+    public void searchForAvailableRooms(){
         //* Falta configurar lista de players em cada sala
         PlayerData pd = PlayerData.myPlayerData();
-        Room newRoom = new Room();
+        Room newRoom = Room.myRoom();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         ArrayList<String> connectedUsersIDs = new ArrayList<String>();
         DatabaseReference pdRef = database.getReference("players").child(uID);
 
         //Primeiro verificar se está conectado
         //É necessário receber status do servidor para verificar isso
-        pdRef.child("isConnectedToARoom").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        pdRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (!task.isSuccessful()) {
@@ -454,10 +463,19 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                 } else {
                     Log.d("Set isConnectedToARoom", String.valueOf(task.getResult().getValue()));
 
-                    if (task.getResult().getValue() == null) {
+                    HashMap<String, Object> playerHashMap = new HashMap<>();
+                    playerHashMap = (HashMap<String, Object>) task.getResult().getValue();
+
+                    if((Boolean) playerHashMap.get("isConnectedToARoom") == null){
                         pd.setIsConnectedToARoom(false);
                     } else {
-                        pd.setIsConnectedToARoom((Boolean) task.getResult().getValue());
+                        pd.setIsConnectedToARoom((Boolean) playerHashMap.get("isConnectedToARoom"));
+                    }
+
+                    if((String) playerHashMap.get("connectedRoomID") == null){
+                        pd.setConnectedRoomID("");
+                    } else {
+                        pd.setConnectedRoomID((String) playerHashMap.get("connectedRoomID"));
                     }
 
                     if(pd.getIsConnectedToARoom() == false) {
@@ -465,17 +483,16 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                         roomsRef.orderByChild("isFull").equalTo(false).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                String newRoomID = "";
                                 if (!task.isSuccessful()) {
                                     Log.e("Search Rooms", "Error getting data", task.getException());
                                 } else {
-
                                     Iterable<DataSnapshot> resData = task.getResult().getChildren();
 
                                     Log.d("Search Rooms", String.valueOf(task.getResult().getValue()));
 
                                     HashMap<String, Object> chosenRoom = new HashMap<>();
                                     String chosenRoomID = "";
-
 
                                     if(task.getResult().exists()){
                                         for(DataSnapshot room : resData){
@@ -485,19 +502,10 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                                             break;
                                         }
                                         ArrayList<String> IDsArray = (ArrayList<String>) chosenRoom.get("connectedPlayersIDs");
-                                        //Adicionar seu ID a lista, se não estiver contido
-                                        int i = 0;
-                                        Boolean jaEstaContido = false;
-                                        while (i < IDsArray.size()){
-                                            if(IDsArray.get(i) == currentUser.getUid()){
-                                                jaEstaContido = true;
-                                            }
-                                            i++;
-                                        }
 
-                                        if(!jaEstaContido){
-                                            IDsArray.add(currentUser.getUid());
-                                        }
+                                        //Não é necessário testar se o ID do usuário está contido, já que essa parte do código só será rodado
+                                        //caso ele não esteja conectado a nenhuma sala
+                                        IDsArray.add(currentUser.getUid());
 
 
                                         //Atualizar instancia de sala local
@@ -506,6 +514,8 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                                         newRoom.setIsFull((Boolean) chosenRoom.get("isFull"));
                                         newRoom.setLimit((Long) chosenRoom.get("limit"));
                                         newRoom.setNumberOfConnectedPlayers((Long) chosenRoom.get("numberOfConnectedPlayers"));
+
+                                        newRoomID = chosenRoomID;
 
                                         //Após uma sala ser escolhida, atualizar instância de sala no firebase
                                         DatabaseReference chosenRoomRef = roomsRef.child(chosenRoomID);
@@ -523,11 +533,14 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                                         connectedUsersIDs.add(currentUser.getUid());
                                         newRoom.setconnectedPlayersIDs(connectedUsersIDs);
                                         newRoom.setIsFull(false);
-                                        roomsRef.push().setValue(newRoom);
+
+                                        newRoomID = roomsRef.push().getKey();
+                                        roomsRef.child(newRoomID).setValue(newRoom);
                                     }
 
                                     //Após isso estara conectado
                                     pd.setIsConnectedToARoom(true);
+                                    pd.setConnectedRoomID(newRoomID);
                                     pdRef.setValue(pd);
                                 }
                             }
@@ -538,8 +551,6 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
 
             }
         });
-
-        return newRoom;
     }
 
 }
