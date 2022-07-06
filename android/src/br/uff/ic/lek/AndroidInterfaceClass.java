@@ -385,22 +385,28 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                     if (!task.isSuccessful()) {
                         Log.e("Set isConnectedToARoom", "Error getting data", task.getException());
                     } else {
-                        Log.d("Set isConnectedToARoom", String.valueOf(task.getResult().getValue()));
+                        if(task.getResult().exists()){
+                            Log.d("Set isConnectedToARoom", String.valueOf(task.getResult().getValue()));
 
-                        HashMap<String, Object> playerHashMap = new HashMap<>();
-                        playerHashMap = (HashMap<String, Object>) task.getResult().getValue();
+                            HashMap<String, Object> playerHashMap = new HashMap<>();
+                            playerHashMap = (HashMap<String, Object>) task.getResult().getValue();
 
-                        if((Boolean) playerHashMap.get("isConnectedToARoom") == null){
+                            if((Boolean) playerHashMap.get("isConnectedToARoom") == null){
+                                pd.setIsConnectedToARoom(false);
+                            } else {
+                                pd.setIsConnectedToARoom((Boolean) playerHashMap.get("isConnectedToARoom"));
+                            }
+
+                            if((String) playerHashMap.get("connectedRoomID") == null){
+                                pd.setConnectedRoomID("");
+                            } else {
+                                pd.setConnectedRoomID((String) playerHashMap.get("connectedRoomID"));
+                            }
+                        } else {
                             pd.setIsConnectedToARoom(false);
-                        } else {
-                            pd.setIsConnectedToARoom((Boolean) playerHashMap.get("isConnectedToARoom"));
+                            pd.setConnectedRoomID("");
                         }
 
-                        if((String) playerHashMap.get("connectedRoomID") == null){
-                            pd.setConnectedRoomID("");
-                        } else {
-                            pd.setConnectedRoomID((String) playerHashMap.get("connectedRoomID"));
-                        }
 
                     }
 
