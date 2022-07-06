@@ -17,6 +17,7 @@ package br.uff.ic.lek;
 
 public interface InterfaceAndroidFireBase {
     void setLibGDXScreen(InterfaceLibGDX libGDXScreen);
+    void chooseSpecificRoom(String newRoomID);
     void sincronizeLocalRoom();
     void searchForAvailableRooms();
     void disconnectFromRoom();
