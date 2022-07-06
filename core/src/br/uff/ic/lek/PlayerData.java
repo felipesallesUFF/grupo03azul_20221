@@ -60,6 +60,9 @@ public class PlayerData {
     String stateAndLastTime;
     int runningTimes;
     String avatarType;
+
+
+
     Boolean isConnectedToARoom;
 
     public String getAvatarType() {
@@ -194,5 +197,13 @@ public class PlayerData {
 
     public String getPlayerNickName() {
         return playerNickName;
+    }
+
+    public Boolean getIsConnectedToARoom() {
+        return isConnectedToARoom;
+    }
+
+    public void setIsConnectedToARoom(Boolean connectedToARoom) {
+        isConnectedToARoom = connectedToARoom;
     }
 }

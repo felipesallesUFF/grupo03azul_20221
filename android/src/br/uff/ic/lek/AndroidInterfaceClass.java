@@ -45,27 +45,26 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
     private FirebaseAuth mAuth;
     // // [END declare_auth
 
-    // @Override
-    // public void onCreate(Bundle savedInstanceState) {
-    //     super.onCreate(savedInstanceState);
-    //     // [START initialize_auth]
-    //     // Initialize Firebase Auth
-    //     mAuth = FirebaseAuth.getInstance();
-    //     // [END initialize_auth]
-    // }
+     @Override
+     public void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         // [START initialize_auth]
+         // Initialize Firebase Auth
+         mAuth = FirebaseAuth.getInstance();
+         // [END initialize_auth]
+     }
 
-    // // [START on_start_check_user]
-    // @Override
-    // public void onStart() {
-    //     super.onStart();
-    //     // Check if user is signed in (non-null) and update UI accordingly.
-    //     System.out.println("hmmm")
-    //     FirebaseUser currentUser = mAuth.getCurrentUser();
-    //     if (currentUser != null) {
-    //         reload();
-    //     }
-    // }
-    // // [END on_start_check_user]
+     // [START on_start_check_user]
+     @Override
+     public void onStart() {
+         super.onStart();
+         // Check if user is signed in (non-null) and update UI accordingly.
+         FirebaseUser currentUser = mAuth.getCurrentUser();
+         if (currentUser != null) {
+             reload();
+         }
+     }
+     // [END on_start_check_user]
 
      private void createAccount(String email, String password) {
          // [START create_user_with_email]
@@ -105,8 +104,8 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                              FirebaseUser currentUser = mAuth.getCurrentUser();
                              updateUI(currentUser);
                          } else {
+
                              System.out.println("*********************************");
-                             System.out.println("***** "+email+" ***** "+password);
                              // If sign in fails, display a message to the user.
                              Log.d(TAG, "signInWithEmail:failure"+email+" "+password, task.getException());
                              updateUI(null);
@@ -116,22 +115,22 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
          // [END sign_in_with_email]
      }
 
-    // private void sendEmailVerification() {
-    //     // Send verification email
-    //     // [START send_email_verification]
-    //     final FirebaseUser user = mAuth.getCurrentUser();
-    //     user.sendEmailVerification()
-    //             .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-    //                 @Override
-    //                 public void onComplete(@NonNull Task<Void> task) {
-    //                     // Email sent
-    //                 }
-    //             });
-    //     // [END send_email_verification]
-    // }
+     private void sendEmailVerification() {
+         // Send verification email
+         // [START send_email_verification]
+         final FirebaseUser user = mAuth.getCurrentUser();
+         user.sendEmailVerification()
+                 .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                     @Override
+                     public void onComplete(@NonNull Task<Void> task) {
+                         // Email sent
+                     }
+                 });
+         // [END send_email_verification]
+     }
 
-    // private void reload() {
-    // }
+     private void reload() {
+     }
 
      private void updateUI(FirebaseUser currentUser) {
          if (currentUser == null) return;
@@ -379,20 +378,40 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
 
             myRef = database.getReference("players").child(uID);
             myRefInicial = database.getReference("playersData").child(uID);
-            if (newAccount){
-                Log.d(TAG, "CONTA NOVA:" + pd.getRegistrationTime());
-                myRef.setValue(pd);
-                myRefInicial.setValue(pd);
-            } else {
-                Log.d(TAG, "CONTA EXISTENTE:" + pd.getRegistrationTime());
-                myRef.setValue(pd);
-            }
-            if (fazSoUmaVez == 0){
-                fazSoUmaVez++;
-                // qualquer alteração em player->uID será notificada
-                //SetOnValueChangedListener();
-            }
-            Log.d(TAG," fazSoUmaVez:"+fazSoUmaVez);
+            //Testar se está conectado ou não em uma sala
+            myRef.child("isConnectedToARoom").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if (!task.isSuccessful()) {
+                        Log.e("Set isConnectedToARoom", "Error getting data", task.getException());
+                    } else {
+                        Log.d("Set isConnectedToARoom", String.valueOf(task.getResult().getValue()));
+
+                        if(task.getResult().getValue() == null){
+                            pd.setIsConnectedToARoom(false);
+                        } else {
+                            pd.setIsConnectedToARoom((Boolean) task.getResult().getValue());
+                        }
+
+                    }
+
+                    if (newAccount){
+                        Log.d(TAG, "CONTA NOVA:" + pd.getRegistrationTime());
+                        myRef.setValue(pd);
+                        myRefInicial.setValue(pd);
+                    } else {
+                        Log.d(TAG, "CONTA EXISTENTE:" + pd.getRegistrationTime());
+                        myRef.setValue(pd);
+                    }
+                    if (fazSoUmaVez == 0){
+                        fazSoUmaVez++;
+                        // qualquer alteração em player->uID será notificada
+                        //SetOnValueChangedListener();
+                    }
+                    Log.d(TAG," fazSoUmaVez:"+fazSoUmaVez);
+
+                }
+            });
         }
     }
     private int fazSoUmaVez=0;
@@ -419,55 +438,89 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
     @Override
     public Room searchForAvailableRooms(){
         //* Falta configurar lista de players em cada sala
+        PlayerData pd = PlayerData.myPlayerData();
         Room newRoom = new Room();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        ArrayList<String> connectedUsersIDs = new ArrayList<String>();
+        DatabaseReference pdRef = database.getReference("players").child(uID);
 
-        DatabaseReference roomsRef = database.getReference("rooms");
-        roomsRef.orderByChild("isFull").equalTo(false).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        //Primeiro verificar se está conectado
+        //É necessário receber status do servidor para verificar isso
+        pdRef.child("isConnectedToARoom").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (!task.isSuccessful()) {
-                    Log.e("Search Rooms", "Error getting data", task.getException());
+                    Log.e("Set isConnectedToARoom", "Error getting data", task.getException());
                 } else {
+                    Log.d("Set isConnectedToARoom", String.valueOf(task.getResult().getValue()));
 
-                    Iterable<DataSnapshot> resData = task.getResult().getChildren();
-
-                    Log.d("Search Rooms", String.valueOf(task.getResult().getValue()));
-
-                    HashMap<String, Object> chosenRoom = new HashMap<>();
-                    String chosenRoomID = "";
-
-
-                    if(task.getResult().exists()){
-                        for(DataSnapshot room : resData){
-                            chosenRoom = (HashMap<String, Object>) room.getValue();
-                            chosenRoomID = room.getKey();
-                            Log.d("Search Rooms", "Chosen Room:" + String.valueOf(room.getKey()) + ": " + String.valueOf(String.valueOf(chosenRoom)));
-                            break;
-                        }
-
-                        //Atualizar instancia de sala local
-                        newRoom.setRoomID(chosenRoomID);
-                        newRoom.setIsFull((Boolean) chosenRoom.get("isFull"));
-                        newRoom.setLimit((Long) chosenRoom.get("limit"));
-                        newRoom.setNumberOfConnectedPlayers((Long) chosenRoom.get("numberOfConnectedPlayers"));
-
-
-                        //Após uma sala ser escolhida, atualizar instância de sala no firebase
-                        DatabaseReference chosenRoomRef = roomsRef.child(chosenRoomID);
-
-                        if(newRoom.getNumberOfConnectedPlayers() == newRoom.getLimit() - 1){
-                            chosenRoomRef.child("isFull").setValue(true);
-                        }
-
-                        chosenRoomRef.child("numberOfConnectedPlayers").setValue(newRoom.getNumberOfConnectedPlayers() + 1);
+                    if (task.getResult().getValue() == null) {
+                        pd.setIsConnectedToARoom(false);
                     } else {
-                        Log.d("Search Rooms", "Room not found, creating new Room:");
-                        newRoom.setLimit(4L);
-                        newRoom.setNumberOfConnectedPlayers(1L);
-                        newRoom.setIsFull(false);
-                        roomsRef.push().setValue(newRoom);
+                        pd.setIsConnectedToARoom((Boolean) task.getResult().getValue());
                     }
+
+                    if(pd.getIsConnectedToARoom() == false) {
+                        DatabaseReference roomsRef = database.getReference("rooms");
+                        roomsRef.orderByChild("isFull").equalTo(false).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                if (!task.isSuccessful()) {
+                                    Log.e("Search Rooms", "Error getting data", task.getException());
+                                } else {
+
+                                    Iterable<DataSnapshot> resData = task.getResult().getChildren();
+
+                                    Log.d("Search Rooms", String.valueOf(task.getResult().getValue()));
+
+                                    HashMap<String, Object> chosenRoom = new HashMap<>();
+                                    String chosenRoomID = "";
+
+
+                                    if(task.getResult().exists()){
+                                        for(DataSnapshot room : resData){
+                                            chosenRoom = (HashMap<String, Object>) room.getValue();
+                                            chosenRoomID = room.getKey();
+                                            Log.d("Search Rooms", "Chosen Room:" + String.valueOf(room.getKey()) + ": " + String.valueOf(String.valueOf(chosenRoom)));
+                                            break;
+                                        }
+
+                                        //Atualizar instancia de sala local
+                                        newRoom.setconnectedPlayersIDs((ArrayList<String>) chosenRoom.get("connectedPlayersIDs"));
+                                        newRoom.setRoomID(chosenRoomID);
+                                        newRoom.setIsFull((Boolean) chosenRoom.get("isFull"));
+                                        newRoom.setLimit((Long) chosenRoom.get("limit"));
+                                        newRoom.setNumberOfConnectedPlayers((Long) chosenRoom.get("numberOfConnectedPlayers"));
+
+
+                                        //Após uma sala ser escolhida, atualizar instância de sala no firebase
+                                        DatabaseReference chosenRoomRef = roomsRef.child(chosenRoomID);
+
+                                        if(newRoom.getNumberOfConnectedPlayers() == newRoom.getLimit() - 1){
+                                            chosenRoomRef.child("isFull").setValue(true);
+                                        }
+
+                                        chosenRoomRef.child("numberOfConnectedPlayers").setValue(newRoom.getNumberOfConnectedPlayers() + 1);
+                                    } else {
+                                        Log.d("Search Rooms", "Room not found, creating new Room:");
+                                        newRoom.setLimit(4L);
+                                        newRoom.setNumberOfConnectedPlayers(1L);
+                                        connectedUsersIDs.add(currentUser.getUid());
+                                        newRoom.setconnectedPlayersIDs(connectedUsersIDs);
+                                        newRoom.setIsFull(false);
+                                        roomsRef.push().setValue(newRoom);
+                                    }
+
+                                    //Após isso estara conectado
+                                    pd.setIsConnectedToARoom(true);
+                                    pdRef.setValue(pd);
+                                }
+                            }
+                        });
+                    }
+
                 }
+
             }
         });
 
