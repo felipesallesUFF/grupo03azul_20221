@@ -100,6 +100,7 @@ public class AndroidLauncher extends AndroidApplication {
 
 			Log.d(TAG, "################ gravando ################");
 		} else {
+
 			playerNickName=savedPlayerNickName;
 			pwdCRC32= savedPwdCRC32;
 			emailCRC32=savedEmailCRC32;
@@ -108,7 +109,7 @@ public class AndroidLauncher extends AndroidApplication {
 			myEdit.putInt("runningTimes", new Integer(++runningTimes));
 			myEdit.apply();
 		}
-		Log.d(TAG, "################ saved<"+playerNickName+">################");
+		Log.d(TAG, "ktestek################ saved<"+playerNickName+">################");
 		Log.d(TAG, "################ saved<"+pwdCRC32+">################");
 		Log.d(TAG, "################ saved<"+emailCRC32+">################");
 		Log.d(TAG, "################ run "+runningTimes+" X ################");
