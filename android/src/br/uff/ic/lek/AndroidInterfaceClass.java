@@ -2,12 +2,15 @@ package br.uff.ic.lek;
 import java.util.*;
 import android.app.Activity;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -208,19 +211,11 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
     public void waitForMyMessages() {
         int ultimosUsuarios = 10;
 
-        // ATENCAO criar as regras do Realtime Database no Firebase
 
         DatabaseReference players = referencia.child("players");
-        // se você precisar de muitos campos de pesquisa, refaça a estrutura
-        // para criar um único campo composto da união de outros
-        // https://stackoverflow.com/questions/33336697/nosql-database-design-for-queries-with-multiple-restrictions-firebase
-        Query playerPesquisa = players.startAt(uID).endAt(uID).orderByChild("authUID").limitToLast(ultimosUsuarios);
-        // see that: https://stackoverflow.com/questions/39076284/firebase-orderbykey-with-startat-and-endat-giving-wrong-results
 
-        // ORDEM CRESCENTE: o último a chegar é o mais recente
-        // Unfortunately firebase doesn't allow returning by descending order
-        //
-        // see SQL vs FIREBASE https://www.youtube.com/watch?v=sKFLI5FOOHs&list=PLl-K7zZEsYLlP-k-RKFa7RyNPa9_wCH2s&index=5
+        Query playerPesquisa = players.startAt(uID).endAt(uID).orderByChild("authUID").limitToLast(ultimosUsuarios);
+
         playerPesquisa.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -236,17 +231,6 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                         String cmd = "" + zoneSnapshot.child("cmd").getValue();
                         String lastUpdateTime = "" + zoneSnapshot.child("lastUpdateTime").getValue();
 
-                        // pegar a data do update para eliminar o processamento em dobro ou mensagens duplicadas
-                        //TODO:LEK
-                        // Qual e´o problema a ser resolvido
-                        // quando entra um novo usuario
-                        // aparece as mensagens de todos os players
-                        // multiplicados por 4
-                        // se ha´2 users x4 --> 8 mensagens ou 4 pares
-                        // se ha 3 users x4 --> 12 mensagens ou 4 trios
-                        // a ideia eh eliminar o processamento de mensagens iguais
-                        // a cada WAITING processar só as 10 mais
-                        // recentes
                         AndroidInterfaceClass.gameLibGDX.enqueueMessage(InterfaceLibGDX.MY_PLAYER_DATA, registrationTime, authUID, cmd, lastUpdateTime);
                     }
                 }
@@ -264,22 +248,53 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
     public void waitForPlayers(){
         PlayerData pd = PlayerData.myPlayerData();
         //Primeiro esperar player se conectar
-        DatabaseReference player = referencia.child("player").child(pd.getAuthUID());
-        
-        DatabaseReference room = referencia.child("rooms").child(pd.getConnectedRoomID());
+        DatabaseReference player = referencia.child("players").child(pd.getAuthUID());
+        Log.d("Wait for players", String.valueOf(player.child("isConnected")));
 
-        //Pegar IDs de players conectados na mesma sala apenas
-        room.child("connectedPlayersIDs").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        player.child("isConnectedToARoom").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!task.isSuccessful()) {
-                    Log.e("Wait for players", "Error getting data", task.getException());
-                } else {
-                    Log.d("Wait for players", String.valueOf(task.getResult().getValue()));
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d("Wait for players", "updated isConnectedTOARoom " + String.valueOf(snapshot.getValue()));
+                //Se estiver connectado, pegar players que está junto
+                if((Boolean) snapshot.getValue()){
+                    referencia.child("players").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            Log.d("Wait for players", "players " + String.valueOf(snapshot.getValue()));
+                            Iterable<DataSnapshot> resData = snapshot.getChildren();
 
+                            for(DataSnapshot player : resData){
+                                //Apenas usar mensagens de jogadores que estão na mesma sala
+                                if(((String) player.child("connectedRoomID").getValue()).equals(pd.getConnectedRoomID())){
+                                    if(!((String) player.child("authUID").getValue()).equals(pd.getAuthUID())){
+                                        if (AndroidInterfaceClass.gameLibGDX != null) {
+                                            //Recebendo mensagem de comando dos usuarios conectados
+                                            String registrationTime = "" + player.child("registrationTime").getValue();
+                                            String authUID = "" + player.child("authUID").getValue();
+                                            String cmd = "" + player.child("cmd").getValue();
+                                            String lastUpdateTime = "" + player.child("lastUpdateTime").getValue();
+
+                                            AndroidInterfaceClass.gameLibGDX.enqueueMessage(InterfaceLibGDX.ALL_PLAYERS_DATA, registrationTime, authUID, cmd, lastUpdateTime);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                 }
             }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
         });
+
 
 //        Query playerPesquisa = players.startAt("READYTOPLAY_-").endAt("READYTOPLAY_~").orderByChild("stateAndLastTime").limitToLast(ultimosUsuarios);
 //
