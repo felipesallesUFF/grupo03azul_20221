@@ -139,7 +139,7 @@ public class Avatar extends Sprite {
         vetorUnitarioMovimento = new Vector3(0,1,0);
         this.setPosition(x, y);
         this.authUID = authUID;
-        this.avatarPower = new AvatarPower(100.0f);
+        //this.avatarPower = new AvatarPower(100.0f);
         temp.x = x;
         temp.y = y;
         temp.z = (float) 0.0;
@@ -164,7 +164,6 @@ public class Avatar extends Sprite {
         walkingNorthFrames[1] = World.atlasPlayerS_W_E_N.findRegion("North02");
         walkingNorthFrames[2] = World.atlasPlayerS_W_E_N.findRegion("North03");
         this.walkingNorth = new Animation<>(0.1f, walkingNorthFrames);
-
 
 
         walkingSouthWestFrames[0] = World.atlasPlayerSW_NW_SE_NE.findRegion("SouthWest01");
@@ -195,7 +194,7 @@ public class Avatar extends Sprite {
     public void update(float delta) {
 
 
-        avatarPower.setPower(avatarPower.getPower() - 0.01f);// decrescimo arbitrário só para ver funcionando
+        //avatarPower.setPower(avatarPower.getPower() - 0.01f);// decrescimo arbitrário só para ver funcionando
 
         if(this.velocity.x > Avatar.SPEED) {
             this.velocity.x = Avatar.SPEED;
@@ -456,7 +455,7 @@ public class Avatar extends Sprite {
 
         batch.end();
         batch.begin();
-        avatarPower.draw(camera, this.getX(), this.getY());
+        //avatarPower.draw(camera, this.getX(), this.getY());
         //
         //Gdx.app.log("Player ", "Player drew!");
     }

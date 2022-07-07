@@ -194,6 +194,7 @@ public class ClassCommandButton extends ClassActorAccessor {
 
                         if (executouUmaVez == false) {
                             executouUmaVez=true;
+                            ClassThreadComandos.objetoAndroidFireBase.searchForAvailableRooms();
                             ClassThreadComandos.objetoAndroidFireBase.waitForPlayers();
                             ClassThreadComandos.objetoAndroidFireBase.waitForMyMessages();
                             Color backgroundColor = new Color(0f, 0f, 0f, 0.5f);

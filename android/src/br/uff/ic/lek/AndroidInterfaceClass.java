@@ -29,6 +29,7 @@ import java.util.*;
 import java.util.*;
 
 import br.uff.ic.lek.actors.Avatar;
+import br.uff.ic.lek.game.World;
 
 public class AndroidInterfaceClass extends Activity implements InterfaceAndroidFireBase {
     public static final boolean debugFazPrimeiraVez = false;

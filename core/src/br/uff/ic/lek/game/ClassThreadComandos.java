@@ -25,7 +25,11 @@ Esse tratamento é feito por uma thread que vai enfileirando as mensagens recebi
 package br.uff.ic.lek.game;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import br.uff.ic.lek.Alquimia;
@@ -194,33 +198,77 @@ public class ClassThreadComandos extends Thread implements InterfaceLibGDX {
     @Override
     public void parseCmd(String authUID, String cmdJson)  {
         Object obj = ClassMessage.decodeCurrentPos(ClassMessage.class, cmdJson);
+        cmdJson = cmdJson.substring(1, cmdJson.length()-1);
+        String[] keyValuePairs = cmdJson.split(",");
 
-        // TODO: o aluno deverá ter uma classe ou um módulo
-        // para tratar a enorme variedade de mensagens
-        // Será um módulo grande. Por simplicidade irei tratar
-        // aqui o MOVETO de forma muito simmplificada
-        if (authUID.equals(PlayerData.myPlayerData().getAuthUID()) &&
-                ((ClassMessage) obj).getCmd().contentEquals("MOVETO")){
-            // traduzindo: se for command MOVETO para o jogador então
-            // OBS: um jogador em geral vai escrever um MOVETO no Firebase
-            // ao clicar no mapa de modo que os demais jogadores possam atualizar a
-            // posicao correspondente de cada adversário. Em geral NUNCA vai
-            // ocorrer o processamento de um MOVETO do próprio jogador para ele mesmo
-            //  que é o que estamos fazendo aqui apenas para demonstração
-            float x = ((ClassMessage) obj).getPx();
-            float y = ((ClassMessage) obj).getPy();
-            World.world.worldController.comandoMoveTo(x,y);
+        HashMap<String, String> cmdHashMap = new HashMap<String, String>();
 
-            // curiosidade: se usássemos as linhas a seguir, teríamos o teletransporte
-            // sem animação do personagem de uma posição para outra. Isso pode até ser necessário para
-            // um ajuste
-            //Avatar avatar = World.world.getAvatar();
-            //avatar.setX(x);
-            //avatar.setY(y);
+        for(String pair : keyValuePairs)
+        {
+            String[] entry = pair.split(":");
+            cmdHashMap.put(entry[0].trim(), entry[1].trim());
         }
 
-        // TODO: mensagens iniciais e processar comandos básicos
-        // da sala de espera de jogos
+        String realCmd = cmdHashMap.get("cmd");
+
+        //Primeira vez
+        if(realCmd.equals("WAITING") && !authUID.equals(PlayerData.myPlayerData().getAuthUID())){
+            float x = Float.parseFloat(cmdHashMap.get("px"));
+            float y = Float.parseFloat(cmdHashMap.get("py"));
+
+            System.out.println("Parsing cmd");
+            System.out.println(cmdHashMap);
+            System.out.println(String.valueOf(x));
+            System.out.println(String.valueOf(y));
+
+
+
+
+
+            ArrayList<Avatar> newAvatars = World.world.getAvatars();
+            Boolean jaFoiCriando = false;
+
+            for (int i = 0; i < newAvatars.size(); i++) {
+                if(newAvatars.get(i).getAuthUID().equals(authUID)){
+                    jaFoiCriando = true;
+                    break;
+                }
+            }
+
+            if(!jaFoiCriando){
+                System.out.println("Criou um avatar novo!");
+                Avatar novoPlayer = new Avatar(new Sprite(World.atlasPlayerS_W_E_N.findRegion("South02")), x, y, authUID);
+                newAvatars.add(novoPlayer);
+                World.world.setAvatars(newAvatars);
+            }
+
+        }
+
+
+        if (!authUID.equals(PlayerData.myPlayerData().getAuthUID())){
+
+            float x = Float.parseFloat(cmdHashMap.get("px"));
+            float y = Float.parseFloat(cmdHashMap.get("py"));
+
+            System.out.println("Parsing cmd");
+            System.out.println(cmdHashMap);
+            System.out.println(String.valueOf(x));
+            System.out.println(String.valueOf(y));
+//            World.world.worldController.comandoMoveTo(x,y);
+
+            Avatar avatar = World.world.getAvatar();
+
+            ArrayList<Avatar> avatarsArray = World.world.getAvatars();
+            for (int i = 0; i < avatarsArray.size(); i++) {
+                if(avatarsArray.get(i).getAuthUID().equals(authUID)){
+                    avatar = avatarsArray.get(i);
+                }
+            }
+
+            avatar.setX(x);
+            avatar.setY(y);
+        }
+
         System.out.println(
                 "\nclasse "+((ClassMessage) obj).getClssName()+
                         " class "+((ClassMessage) obj).getClss()+
@@ -230,21 +278,6 @@ public class ClassThreadComandos extends Thread implements InterfaceLibGDX {
                         " z="+((ClassMessage) obj).getPz()+
                         " cardNumber="+((ClassMessage) obj).getCardNumber()+
                         " uID="+((ClassMessage) obj).getuID() );
-
-        //if (cmd.equals())
-        /*
-        ClassMessagePos gmp = (ClassMessagePos) obj;
-        // simultâneos
-        // opponent vai até a carta e volta
-        ClassAnimation.cardFlipWithAvatar(ClassAnimation.cartaExemplo,
-                ClassAnimation.opponentAvatar, true, 1.5f, 0, 0f);
-        //ClassAnimation.cardFlipWithAvatar(ClassAnimation.cartaExemplo,
-        //        null, true, 0);
-
-        //ClassAnimation.disparaAnimacao(gmp.getPx(), gmp.getPy());
-        //opponentMove(ClassAnimation.cartaExemplo);
-
-         */
 
     }
 }
