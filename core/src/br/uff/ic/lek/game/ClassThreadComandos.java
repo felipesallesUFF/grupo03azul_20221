@@ -211,35 +211,6 @@ public class ClassThreadComandos extends Thread implements InterfaceLibGDX {
 
         String realCmd = cmdHashMap.get("cmd");
 
-        //Primeira vez
-//        if(realCmd.equals("WAITING") && !authUID.equals(PlayerData.myPlayerData().getAuthUID())){
-//            float x = Float.parseFloat(cmdHashMap.get("px"));
-//            float y = Float.parseFloat(cmdHashMap.get("py"));
-//
-//            System.out.println("Parsing cmd");
-//            System.out.println(cmdHashMap);
-//            System.out.println(String.valueOf(x));
-//            System.out.println(String.valueOf(y));
-//
-//            ArrayList<Avatar> newAvatars = World.world.getAvatars();
-//            Boolean jaFoiCriado = false;
-//
-//            for (int i = 0; i < newAvatars.size(); i++) {
-//                if(newAvatars.get(i).getAuthUID().equals(authUID)){
-//                    jaFoiCriado = true;
-//                    break;
-//                }
-//            }
-//
-//            if(!jaFoiCriado){
-//                System.out.println("Criou um avatar novo!");
-//                Avatar novoPlayer = new Avatar(new Sprite(World.atlasPlayerS_W_E_N.findRegion("South02")), x, y, authUID);
-//                newAvatars.add(novoPlayer);
-//                World.world.setAvatars(newAvatars);
-//            }
-//
-//        }
-
 
         if (!authUID.equals(PlayerData.myPlayerData().getAuthUID())){
             //Criar Avatar

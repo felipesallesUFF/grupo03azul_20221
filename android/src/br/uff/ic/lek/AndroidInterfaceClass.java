@@ -206,47 +206,12 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
     }
     public boolean waitingForTheFirstTime = false;
 
-
-
+     /*
+        Esta função toma conta da escuta alterações de players que estão na mesma sala
+        e encaminha os comandos para processamento por meio da função enqueueMessage()
+      */
     @Override
-    public void waitForMyMessages() {
-        int ultimosUsuarios = 10;
-
-
-        DatabaseReference players = referencia.child("players");
-
-        Query playerPesquisa = players.startAt(uID).endAt(uID).orderByChild("authUID").limitToLast(ultimosUsuarios);
-
-        playerPesquisa.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot zoneSnapshot : dataSnapshot.getChildren()) {
-
-                    Log.d(TAG, "UID listener dos " + ultimosUsuarios + " users ordem lastUpdateTime " + zoneSnapshot.child("cmd").getValue() + " " + zoneSnapshot.child("lastUpdateTime").getValue());
-                    // TODO chamar funcao de interface implementada por LIBGDX e setada aqui
-                    //if ()
-                    //AndroidInterfaceClass.gameLibGDX.exibeLa(msg);
-                    if (AndroidInterfaceClass.gameLibGDX != null) {
-                        String registrationTime = "" + zoneSnapshot.child("registrationTime").getValue();
-                        String authUID = "" + zoneSnapshot.child("authUID").getValue();
-                        String cmd = "" + zoneSnapshot.child("cmd").getValue();
-                        String lastUpdateTime = "" + zoneSnapshot.child("lastUpdateTime").getValue();
-
-                        AndroidInterfaceClass.gameLibGDX.enqueueMessage(InterfaceLibGDX.MY_PLAYER_DATA, registrationTime, authUID, cmd, lastUpdateTime);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.i(TAG, "playerPesquisa.addValueEventListener onCancelled", databaseError.toException());
-            }
-        });
-    }
-
-    //Funcao para atualizar informações de players conectados, localmente
-    @Override
-    public void waitForPlayers(){
+    public void handleMultiplayer(){
         PlayerData pd = PlayerData.myPlayerData();
         //Primeiro esperar player se conectar
         DatabaseReference player = referencia.child("players").child(pd.getAuthUID());
@@ -257,7 +222,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Log.d("Wait for players", "updated isConnectedTOARoom " + String.valueOf(snapshot.getValue()));
-                //Se estiver connectado, pegar players que está junto
+                //Se estiver connectado, pegar players que está junto na mesma sala
                 if((Boolean) snapshot.getValue()){
                     referencia.child("players").addChildEventListener(new ChildEventListener() {
                         @Override
@@ -270,13 +235,13 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                             HashMap<String, Object> player = (HashMap<String, Object>) snapshot.getValue();
                             if(((String) player.get("connectedRoomID")).equals(pd.getConnectedRoomID())){
                                 Log.d("Wait for players", "Atualizou alguem da sala" + String.valueOf(snapshot.getValue()));
+                                //Apenas levar em conta mudanças se não for o mesmo ID que ID local
                                 if(!((String) player.get("authUID")).equals(pd.getAuthUID())){
                                     //Recebendo mensagem de comando dos usuarios conectados
                                     String registrationTime = "" + player.get("registrationTime");
                                     String authUID = "" + player.get("authUID");
                                     String cmd = "" + player.get("cmd");
                                     String lastUpdateTime = "" + player.get("lastUpdateTime");
-                                    Log.d("Wait for players", "AQUI AQUI" + String.valueOf(snapshot.getValue()));
 
                                     Log.d("Wait for players", "Resposta" + String.valueOf(snapshot.getValue()));
 
@@ -300,38 +265,6 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
 
                         }
                     });
-
-//                    referencia.child("players").addValueEventListener(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                            Log.d("Wait for players", "players " + String.valueOf(snapshot.getValue()));
-//                            Iterable<DataSnapshot> resData = snapshot.getChildren();
-//
-//                            for(DataSnapshot player : resData){
-//                                //Apenas usar mensagens de jogadores que estão na mesma sala
-//                                if(((String) player.child("connectedRoomID").getValue()).equals(pd.getConnectedRoomID())){
-//                                    if(!((String) player.child("authUID").getValue()).equals(pd.getAuthUID())){
-//                                        if (AndroidInterfaceClass.gameLibGDX != null) {
-//                                            //Recebendo mensagem de comando dos usuarios conectados
-//                                            String registrationTime = "" + player.child("registrationTime").getValue();
-//                                            String authUID = "" + player.child("authUID").getValue();
-//                                            String cmd = "" + player.child("cmd").getValue();
-//                                            String lastUpdateTime = "" + player.child("lastUpdateTime").getValue();
-//
-//                                            Log.d("Wait for players", "Resposta" + String.valueOf(snapshot.getValue()));
-//
-//                                            AndroidInterfaceClass.gameLibGDX.enqueueMessage(InterfaceLibGDX.ALL_PLAYERS_DATA, registrationTime, authUID, cmd, lastUpdateTime);
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError error) {
-//
-//                        }
-//                    });
                 }
             }
 

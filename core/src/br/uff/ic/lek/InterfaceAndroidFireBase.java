@@ -24,8 +24,7 @@ public interface InterfaceAndroidFireBase {
     void searchForAvailableRooms();
     void disconnectFromRoom();
     void writePlayerData(Avatar player);
-    void waitForMyMessages();
-    void waitForPlayers();
+    void handleMultiplayer();
     void finishAndRemoveTask();
 
 }
