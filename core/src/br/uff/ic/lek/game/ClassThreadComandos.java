@@ -212,41 +212,47 @@ public class ClassThreadComandos extends Thread implements InterfaceLibGDX {
         String realCmd = cmdHashMap.get("cmd");
 
         //Primeira vez
-        if(realCmd.equals("WAITING") && !authUID.equals(PlayerData.myPlayerData().getAuthUID())){
-            float x = Float.parseFloat(cmdHashMap.get("px"));
-            float y = Float.parseFloat(cmdHashMap.get("py"));
+//        if(realCmd.equals("WAITING") && !authUID.equals(PlayerData.myPlayerData().getAuthUID())){
+//            float x = Float.parseFloat(cmdHashMap.get("px"));
+//            float y = Float.parseFloat(cmdHashMap.get("py"));
+//
+//            System.out.println("Parsing cmd");
+//            System.out.println(cmdHashMap);
+//            System.out.println(String.valueOf(x));
+//            System.out.println(String.valueOf(y));
+//
+//            ArrayList<Avatar> newAvatars = World.world.getAvatars();
+//            Boolean jaFoiCriado = false;
+//
+//            for (int i = 0; i < newAvatars.size(); i++) {
+//                if(newAvatars.get(i).getAuthUID().equals(authUID)){
+//                    jaFoiCriado = true;
+//                    break;
+//                }
+//            }
+//
+//            if(!jaFoiCriado){
+//                System.out.println("Criou um avatar novo!");
+//                Avatar novoPlayer = new Avatar(new Sprite(World.atlasPlayerS_W_E_N.findRegion("South02")), x, y, authUID);
+//                newAvatars.add(novoPlayer);
+//                World.world.setAvatars(newAvatars);
+//            }
+//
+//        }
 
-            System.out.println("Parsing cmd");
-            System.out.println(cmdHashMap);
-            System.out.println(String.valueOf(x));
-            System.out.println(String.valueOf(y));
 
-
-
-
-
+        if (!authUID.equals(PlayerData.myPlayerData().getAuthUID())){
+            //Criar Avatar
             ArrayList<Avatar> newAvatars = World.world.getAvatars();
-            Boolean jaFoiCriando = false;
+            Boolean jaFoiCriado = false;
 
             for (int i = 0; i < newAvatars.size(); i++) {
                 if(newAvatars.get(i).getAuthUID().equals(authUID)){
-                    jaFoiCriando = true;
+                    jaFoiCriado = true;
                     break;
                 }
             }
 
-            if(!jaFoiCriando){
-                System.out.println("Criou um avatar novo!");
-                Avatar novoPlayer = new Avatar(new Sprite(World.atlasPlayerS_W_E_N.findRegion("South02")), x, y, authUID);
-                newAvatars.add(novoPlayer);
-                World.world.setAvatars(newAvatars);
-            }
-
-        }
-
-
-        if (!authUID.equals(PlayerData.myPlayerData().getAuthUID())){
-
             float x = Float.parseFloat(cmdHashMap.get("px"));
             float y = Float.parseFloat(cmdHashMap.get("py"));
 
@@ -254,6 +260,16 @@ public class ClassThreadComandos extends Thread implements InterfaceLibGDX {
             System.out.println(cmdHashMap);
             System.out.println(String.valueOf(x));
             System.out.println(String.valueOf(y));
+
+            Avatar novoPlayer = new Avatar(new Sprite(World.atlasPlayerS_W_E_N.findRegion("South02")), x, y, authUID);
+
+            if(!jaFoiCriado){
+                System.out.println("Criou um avatar novo!");
+                newAvatars.add(novoPlayer);
+                World.world.setAvatars(newAvatars);
+            }
+
+
 //            World.world.worldController.comandoMoveTo(x,y);
 
             Avatar avatar = World.world.getAvatar();
@@ -265,19 +281,21 @@ public class ClassThreadComandos extends Thread implements InterfaceLibGDX {
                 }
             }
 
+            System.out.println("Setting position of " + avatar.getAuthUID());
+            System.out.println("Message ID: " + authUID);
             avatar.setX(x);
             avatar.setY(y);
         }
 
-        System.out.println(
-                "\nclasse "+((ClassMessage) obj).getClssName()+
-                        " class "+((ClassMessage) obj).getClss()+
-                        "\n cmd "+((ClassMessage) obj).getCmd()+
-                        " x="+((ClassMessage) obj).getPx()+
-                        " y="+((ClassMessage) obj).getPy()+
-                        " z="+((ClassMessage) obj).getPz()+
-                        " cardNumber="+((ClassMessage) obj).getCardNumber()+
-                        " uID="+((ClassMessage) obj).getuID() );
+//        System.out.println(
+//                "\nclasse "+((ClassMessage) obj).getClssName()+
+//                        " class "+((ClassMessage) obj).getClss()+
+//                        "\n cmd "+((ClassMessage) obj).getCmd()+
+//                        " x="+((ClassMessage) obj).getPx()+
+//                        " y="+((ClassMessage) obj).getPy()+
+//                        " z="+((ClassMessage) obj).getPz()+
+//                        " cardNumber="+((ClassMessage) obj).getCardNumber()+
+//                        " uID="+((ClassMessage) obj).getuID() );
 
     }
 }
