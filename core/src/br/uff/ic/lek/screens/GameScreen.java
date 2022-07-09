@@ -106,10 +106,15 @@ public class GameScreen implements Screen{
             camera.unproject(touchPos);
             bucket.x = touchPos.x - 64 / 2;
         }
-        if (Gdx.input.isKeyPressed(Keys.LEFT))
+        if (Gdx.input.isKeyPressed(Keys.LEFT)) {
             bucket.x -= 200 * Gdx.graphics.getDeltaTime();
-        if (Gdx.input.isKeyPressed(Keys.RIGHT))
-            bucket.x += 200 * Gdx.graphics.getDeltaTime();
+        }
+        if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
+            //bucket.x += 200 * Gdx.graphics.getDeltaTime();
+            game.setScreen(new SplashScreen());
+            dispose();
+        }
+
 
         //aqui o programa se certifica de que o balde está
         // dentro dos limites da tela.
