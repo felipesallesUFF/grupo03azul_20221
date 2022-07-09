@@ -20,10 +20,17 @@ import com.badlogic.gdx.ApplicationListener;
 
 import br.uff.ic.lek.game.ClassThreadComandos;
 import br.uff.ic.lek.screens.SplashScreen;
+import br.uff.ic.lek.screens.Menu;
 import br.uff.ic.lek.game.World;
 import com.badlogic.gdx.Game;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
 public class Alquimia extends Game  implements ApplicationListener{
+
+	public SpriteBatch batch;
+	public BitmapFont font;
 
 	public Alquimia(InterfaceAndroidFireBase objetoAndroidFireBase){
 		ClassThreadComandos.objetoAndroidFireBase = objetoAndroidFireBase;
@@ -40,11 +47,23 @@ public class Alquimia extends Game  implements ApplicationListener{
 
 	@Override
 	public void create() {
+		batch = new SpriteBatch();
+		//A fonte usada será Arial(padrão da LibGDX)
+		font = new BitmapFont();
+		this.setScreen(new Menu(this));
+
 		this.setScreen(new SplashScreen());
 	}
+	public void render() {
+		super.render();
+	}
+
 
 	@Override
 	public void dispose() {
+		batch.dispose();
+		font.dispose();
+
 		super.dispose();
 		World.dispose();
 	}
