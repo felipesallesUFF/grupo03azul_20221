@@ -35,8 +35,8 @@ public class GameScreen implements Screen{
         this.game = game;
 
         //carregamento das imagens do balde e da gota
-        dropImage = new Texture(Gdx.files.internal("butao.png"));
-        bucketImage = new Texture(Gdx.files.internal("butao2.png"));
+        dropImage = new Texture(Gdx.files.internal("C:\\Users\\guifm\\Documents\\GitHub\\grupo03azul_20221\\android\\assets\\img\\Large Buttons\\Colored Large Buttons\\Start  col_Button.png"));
+        bucketImage = new Texture(Gdx.files.internal("C:\\Users\\guifm\\Documents\\GitHub\\grupo03azul_20221\\android\\assets\\img\\Large Buttons\\Colored Large Buttons\\Quit  col_Button.png"));
 
         /*
         //carregamento dos efeitos sonoros da chuva e dos pingos
@@ -110,9 +110,7 @@ public class GameScreen implements Screen{
             bucket.x -= 200 * Gdx.graphics.getDeltaTime();
         }
         if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
-            //bucket.x += 200 * Gdx.graphics.getDeltaTime();
-            game.setScreen(new SplashScreen());
-            dispose();
+            bucket.x += 200 * Gdx.graphics.getDeltaTime();
         }
 
 
@@ -153,7 +151,7 @@ public class GameScreen implements Screen{
     public void show() {
         //iniciar a reprodução da música de
         //fundo assim que a tela é mostrada
-        rainMusic.play();
+        //rainMusic.play();
     }
 
     @Override
@@ -172,8 +170,8 @@ public class GameScreen implements Screen{
     public void dispose() {
         dropImage.dispose();
         bucketImage.dispose();
-        dropSound.dispose();
-        rainMusic.dispose();
+        //dropSound.dispose();
+        //rainMusic.dispose();
     }// aqui todos os recursos usados serão descartados após
     // seu uso.
 

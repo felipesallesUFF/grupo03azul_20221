@@ -52,7 +52,7 @@ public class Alquimia extends Game  implements ApplicationListener{
 		font = new BitmapFont();
 		this.setScreen(new Menu(this));
 
-		//this.setScreen(new SplashScreen());
+		this.setScreen(new SplashScreen());
 	}
 	public void render() {
 		super.render();
