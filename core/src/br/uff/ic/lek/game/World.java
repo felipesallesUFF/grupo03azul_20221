@@ -362,6 +362,9 @@ public class World {
         return avatar;
     }
 
+    public PathPlanning getPathPlan(){return World.world.pathPlan;}/*criei para o avatar poder
+    usá-lo.*/
+
     public ArrayList<Avatar> getAvatars() {
         return avatars;
     }

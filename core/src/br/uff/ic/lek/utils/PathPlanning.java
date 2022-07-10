@@ -49,15 +49,10 @@ public class PathPlanning {
     int lastEndTileY;
     int startTileX;
     int startTileY;
-    TiledSmoothableGraphPath<FlatTiledNode> path;//isso é oq eu quero,tem o caminho pronto para seguir]
-    //criar um metodo para acessá-lo(get)[ele é uma ""lista" de nós ligados sequencialmente
-    // e um metodo para pegar o nó(path.nodes.get(indice que vc quer pegar do vetor[cada indice é um nó]))
-    // (path.getcount{vai me dar quanto nós tem no vetor})
-    //no avatar/player terá um indice que vai te dizer que nó vc está(tem que ficar checando se ele está checando no próximo nó e andar linha reta
-    // ate chegar e chacar se vc chegou no ultimo e comparar com o count)
-
-    //converter coordenada do tile para mundo (mundo para pro tile(/32) e tile para mundo(*32)) tmb tem coordenada do tipo tela(tem que cahamr
-    // camera.unproject(vector) vai conveter da tela do cel para a do mundo).
+    TiledSmoothableGraphPath<FlatTiledNode> path;
+    //em teoria eu deveria mover isso de world para avatar e o houveColisão em avatar nunca
+    //fica false.Acredito que eu deva usar pathplanning para verificar se houvecolisão
+    //e modificar seu valor.
     TiledManhattanDistance<FlatTiledNode> heuristic;
     IndexedAStarPathFinder<FlatTiledNode> pathFinder;
     PathSmoother<FlatTiledNode, Vector2> pathSmoother;

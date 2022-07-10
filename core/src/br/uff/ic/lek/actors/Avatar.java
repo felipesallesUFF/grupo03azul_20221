@@ -34,11 +34,16 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
+
+import br.uff.ic.lek.game.World;
+import br.uff.ic.lek.pathfinder.FlatTiledNode;
+import br.uff.ic.lek.utils.PathPlanning;
 
 public class Avatar extends Sprite {
 
