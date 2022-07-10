@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
+import br.uff.ic.lek.PlayerData;
 import br.uff.ic.lek.game.World;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -21,18 +22,21 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.Input.TextInputListener;
+import com.sun.tools.javac.util.Constants;
 
 
 import br.uff.ic.lek.Alquimia;
 
 public class Menu implements Screen {
 
+    private Alquimia parent;
     private SpriteBatch batch;
     protected Stage stage;
     private Viewport viewport;
@@ -40,31 +44,33 @@ public class Menu implements Screen {
     private TextureAtlas atlas;
     protected Skin skin;
     public boolean check = false;
-    public String nickname;
+    public String nickname = PlayerData.myPlayerData().getPlayerNickName();
+    public String email = PlayerData.myPlayerData().getEmail();
+    //public TextField name;
+    //public TextField mail;
     public TextInputListener nick;
+    public TextInputListener Email;
 
     public Menu(Alquimia alquimia)
     {
-        atlas = new TextureAtlas("skin.atlas");
-        skin = new Skin(Gdx.files.internal("skin.json"), atlas);
-
+        parent = alquimia;
+        //
         batch = new SpriteBatch();
         camera = new OrthographicCamera();
-        viewport = new FitViewport(World.getMapWidthPixel(), World.getMapHeightPixel(), camera);
+        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
         viewport.apply();
 
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         camera.update();
 
         stage = new Stage(viewport, batch);
+        //Stage should controll input:
+        Gdx.input.setInputProcessor(stage);
     }
 
 
     @Override
     public void show() {
-        //Stage should controll input:
-        Gdx.input.setInputProcessor(stage);
-
         //Create Table
         Table mainTable = new Table();
         //Set table to fill stage
@@ -72,23 +78,35 @@ public class Menu implements Screen {
         //Set alignment of contents in the table.
         mainTable.top();
 
+        //Create texture
+        atlas = new TextureAtlas("skin/glassy-ui.atlas");
+        skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"), atlas);
+
         //Create buttons
         TextButton playButton = new TextButton("Play", skin);
-        TextButton optionsButton = new TextButton("Options", skin);
+        TextButton NicknameButton = new TextButton("MudarNickname", skin);
+        TextButton EmailButton = new TextButton("MudarEmail", skin);
         TextButton exitButton = new TextButton("Exit", skin);
 
         //Add listeners to buttons
         playButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new PlayScreen());
-                //((Game)Gdx.app.getApplicationListener()).setScreen(new SplashScreen());
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new SplashScreen());
             }
         });
-        optionsButton.addListener(new ClickListener(){
+        NicknameButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                check = true;
+                Gdx.input.getTextInput( nick, "Nickname", nickname, nickname);
+                Gdx.input.setOnscreenKeyboardVisible(true);
+            }
+        });
+        EmailButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.input.getTextInput( Email, "Email", email, email);
+                Gdx.input.setOnscreenKeyboardVisible(true);
             }
         });
         exitButton.addListener(new ClickListener(){
@@ -101,7 +119,9 @@ public class Menu implements Screen {
         //Add buttons to table
         mainTable.add(playButton);
         mainTable.row();
-        mainTable.add(optionsButton);
+        mainTable.add(NicknameButton);
+        mainTable.row();
+        mainTable.add(EmailButton);
         mainTable.row();
         mainTable.add(exitButton);
 
@@ -111,16 +131,12 @@ public class Menu implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(.1f, .12f, .16f, 1);
+        Gdx.gl.glClearColor( 0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         stage.act();
         stage.draw();
 
-        if(check == true){
-            Gdx.input.getTextInput( nick, "Nickname", nickname, "...");
-            Gdx.input.setOnscreenKeyboardVisible(true);
-        }
     }
 
     @Override
@@ -145,12 +161,12 @@ public class Menu implements Screen {
 
     }
 
-    @Override
+    //@Override
     public void input (String text) {
         nickname = text;
     }
 
-    @Override
+    //@Override
     public void canceled () {
         check = false;
     }
