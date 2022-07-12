@@ -29,8 +29,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Alquimia extends Game  implements ApplicationListener{
 
-	public SpriteBatch batch;
-	public BitmapFont font;
+	//public SpriteBatch batch;
+	//public BitmapFont font;
 
 	public Alquimia(InterfaceAndroidFireBase objetoAndroidFireBase){
 		ClassThreadComandos.objetoAndroidFireBase = objetoAndroidFireBase;
@@ -47,11 +47,10 @@ public class Alquimia extends Game  implements ApplicationListener{
 
 	@Override
 	public void create() {
-		batch = new SpriteBatch();
+		//batch = new SpriteBatch();
 		//A fonte usada será Arial(padrão da LibGDX)
-		font = new BitmapFont();
-		this.setScreen(new Menu(this));
-
+		//font = new BitmapFont();
+		this.setScreen(new Menu(this));//começando com o menu primeiro
 		//this.setScreen(new SplashScreen());
 	}
 	public void render() {
@@ -61,8 +60,8 @@ public class Alquimia extends Game  implements ApplicationListener{
 
 	@Override
 	public void dispose() {
-		batch.dispose();
-		font.dispose();
+		//batch.dispose();
+		//font.dispose();
 
 		super.dispose();
 		World.dispose();
