@@ -59,6 +59,7 @@ public class Menu implements Screen {
 
     @Override
     public void show() {
+        //para organizar os elementos(nesse caso os botões)
         //Create Table
         Table mainTable = new Table();
         //Set table to fill stage
@@ -66,7 +67,7 @@ public class Menu implements Screen {
         //Set alignment of contents in the table.
         mainTable.top();
 
-        //Create texture
+        //Picking the texture
         atlas = new TextureAtlas("skin/glassy-ui.atlas");
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"), atlas);
 
