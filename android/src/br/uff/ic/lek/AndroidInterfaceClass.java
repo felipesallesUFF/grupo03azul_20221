@@ -51,157 +51,156 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
     private FirebaseAuth mAuth;
     // // [END declare_auth
 
-     @Override
-     public void onCreate(Bundle savedInstanceState) {
-         super.onCreate(savedInstanceState);
-         // [START initialize_auth]
-         // Initialize Firebase Auth
-         mAuth = FirebaseAuth.getInstance();
-         // [END initialize_auth]
-     }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // [START initialize_auth]
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+        // [END initialize_auth]
+    }
 
-     // [START on_start_check_user]
-     @Override
-     public void onStart() {
-         super.onStart();
-         // Check if user is signed in (non-null) and update UI accordingly.
-         FirebaseUser currentUser = mAuth.getCurrentUser();
-         if (currentUser != null) {
-             reload();
-         }
-     }
-     // [END on_start_check_user]
+    // [START on_start_check_user]
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            reload();
+        }
+    }
+    // [END on_start_check_user]
 
-     private void createAccount(String email, String password) {
-         // [START create_user_with_email]
-         mAuth.createUserWithEmailAndPassword(email, password)
-                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                     @Override
-                     public void onComplete(@NonNull Task<AuthResult> task) {
-                         if (task.isSuccessful()) {
-                             // Sign in success, update UI with the signed-in user's information
-                             Log.d(TAG, "createUserWithEmail:success");
-                             FirebaseUser currentUser = mAuth.getCurrentUser();
-                             updateUI(currentUser);
-                         } else {
-                             // If sign in fails, display a message to the user.
-                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                             //Toast.makeText(AndroidInterfaceClass.this, "Authentication failed.",
-                             //        Toast.LENGTH_SHORT).show();
-                             updateUI(null);
-                         }
-                     }
-                 });
-         // [END create_user_with_email]
-     }
+    private void createAccount(String email, String password) {
+        // [START create_user_with_email]
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "createUserWithEmail:success");
+                            FirebaseUser currentUser = mAuth.getCurrentUser();
+                            updateUI(currentUser);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            //Toast.makeText(AndroidInterfaceClass.this, "Authentication failed.",
+                            //        Toast.LENGTH_SHORT).show();
+                            updateUI(null);
+                        }
+                    }
+                });
+        // [END create_user_with_email]
+    }
 
-     private void signIn(String email, String password) {
-         // [START sign_in_with_email]
-         System.out.println("*********************************");
-         System.out.println("***** "+email+" ***** "+password);
+    private void signIn(String email, String password) {
+        // [START sign_in_with_email]
+        System.out.println("*********************************");
+        System.out.println("***** "+email+" ***** "+password);
 
-         mAuth.signInWithEmailAndPassword(email, password)
-                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                     @Override
-                     public void onComplete(@NonNull Task<AuthResult> task) {
-                         if (task.isSuccessful()) {
-                             // Sign in success, update UI with the signed-in user's information
-                             Log.d(TAG, "signInWithEmail:success"+email+" "+password);
-                             FirebaseUser currentUser = mAuth.getCurrentUser();
-                             updateUI(currentUser);
-                         } else {
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithEmail:success"+email+" "+password);
+                            FirebaseUser currentUser = mAuth.getCurrentUser();
+                            updateUI(currentUser);
+                        } else {
 
-                             System.out.println("*********************************");
-                             // If sign in fails, display a message to the user.
-                             Log.d(TAG, "signInWithEmail:failure"+email+" "+password, task.getException());
-                             updateUI(null);
-                         }
-                     }
-                 });
-         // [END sign_in_with_email]
-     }
+                            System.out.println("*********************************");
+                            // If sign in fails, display a message to the user.
+                            Log.d(TAG, "signInWithEmail:failure"+email+" "+password, task.getException());
+                            updateUI(null);
+                        }
+                    }
+                });
+        // [END sign_in_with_email]
+    }
 
-     private void sendEmailVerification() {
-         // Send verification email
-         // [START send_email_verification]
-         final FirebaseUser user = mAuth.getCurrentUser();
-         user.sendEmailVerification()
-                 .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                     @Override
-                     public void onComplete(@NonNull Task<Void> task) {
-                         // Email sent
-                     }
-                 });
-         // [END send_email_verification]
-     }
+    private void sendEmailVerification() {
+        // Send verification email
+        // [START send_email_verification]
+        final FirebaseUser user = mAuth.getCurrentUser();
+        user.sendEmailVerification()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        // Email sent
+                    }
+                });
+        // [END send_email_verification]
+    }
 
-     private void reload() {
-     }
+    private void reload() {
+    }
 
-     private void updateUI(FirebaseUser currentUser) {
-         if (currentUser == null) return;
-         providerID = currentUser.getProviderId();
-         uID = currentUser.getUid();
-         email = currentUser.getEmail();
-         Log.d(TAG, "updateUI providerID:" + providerID + " uID:" + uID + " email:" + email);
-         currentUserDefined(currentUser);
-         updateRealTimeDatabaseUserData(currentUser);
-     }
+    private void updateUI(FirebaseUser currentUser) {
+        if (currentUser == null) return;
+        providerID = currentUser.getProviderId();
+        uID = currentUser.getUid();
+        email = currentUser.getEmail();
+        Log.d(TAG, "updateUI providerID:" + providerID + " uID:" + uID + " email:" + email);
+        currentUserDefined(currentUser);
+        updateRealTimeDatabaseUserData(currentUser);
+    }
 
+    /*
+       Carregar instância de currentUser no local
+     */
+    private void currentUserDefined(FirebaseUser currentUser) {
+        if (currentUser != null) {
+            email = currentUser.getEmail();
+            try {
+                final String before = email.split("@")[0];
+                playerNickName = before;
 
-     private void currentUserDefined(FirebaseUser currentUser) {
-         if (currentUser != null) {
-             email = currentUser.getEmail();
-             try {
-                 final String before = email.split("@")[0];
-                 playerNickName = before;
-
-             } catch (Exception e) {
-                 Log.d(TAG, "nao encontrou @");
-             }
-             Log.d(TAG, "playerNickName:" + playerNickName);
-             uID = currentUser.getUid();
-             providerID = currentUser.getProviderId();
-             Log.d(TAG, "currentUser " + email + " " + providerID);
-             String original = email;
-             String _pwd = original.replace("@gmail.com", "");
-             pwd = _pwd;
-             Log.d(TAG, "Use SQLite to save email=" + email + " pwd=" + pwd + " uID=" + uID);
-         } else {
-             Log.d(TAG, "currentUser eh null");
-         }
-     }
+            } catch (Exception e) {
+                Log.d(TAG, "nao encontrou @");
+            }
+            Log.d(TAG, "playerNickName:" + playerNickName);
+            uID = currentUser.getUid();
+            providerID = currentUser.getProviderId();
+            Log.d(TAG, "currentUser " + email + " " + providerID);
+            String original = email;
+            String _pwd = original.replace("@gmail.com", "");
+            pwd = _pwd;
+            Log.d(TAG, "Use SQLite to save email=" + email + " pwd=" + pwd + " uID=" + uID);
+        } else {
+            Log.d(TAG, "currentUser eh null");
+        }
+    }
 
     public AndroidInterfaceClass(String playerNickName, String emailCRC32, String pwdCRC32, int runningTimes) {
         this.playerNickName = playerNickName;
         this.runningTimes = runningTimes;
         Log.d(TAG, "construtor AndroidInterfaceClass execucoes:" +runningTimes+ " playerNickName="+playerNickName+" emailCRC32="+emailCRC32+" pwdCRC32="+pwdCRC32);
-         
-        //FirebaseAuth.getInstance().signOut();// comentar
-        // para que o email não seja só um número identifico
-        // no email e na senha o pm ou periodic memory
+
         database = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-         if (AndroidInterfaceClass.debugFazPrimeiraVez || currentUser == null) {
-             try {
-                 this.createAccount(emailCRC32, pwdCRC32);
-                 Log.d(TAG, "criou um novo auth com email:" + emailCRC32 + " pwd:" + pwdCRC32);
-                 this.signIn(emailCRC32, pwdCRC32);
-                 // signIn faz efeito na próxima execução
-                 // para remover é preciso desinstalar e desligar o telefone
-                 newAccount = true;
-             } catch (Exception e) {
-                 Log.d(TAG, "Exception signIn " + e.getMessage());
-             }
-         } else {
-             newAccount=false;
-         }
+        if (AndroidInterfaceClass.debugFazPrimeiraVez || currentUser == null) {
+            try {
+                this.createAccount(emailCRC32, pwdCRC32);
+                Log.d(TAG, "criou um novo auth com email:" + emailCRC32 + " pwd:" + pwdCRC32);
+                this.signIn(emailCRC32, pwdCRC32);
+                // signIn faz efeito na próxima execução
+                // para remover é preciso desinstalar e desligar o telefone
+                newAccount = true;
+            } catch (Exception e) {
+                Log.d(TAG, "Exception signIn " + e.getMessage());
+            }
+        } else {
+            newAccount=false;
+        }
 
-         currentUserDefined(currentUser);
+        currentUserDefined(currentUser);
 
-         updateRealTimeDatabaseUserData(currentUser);
+        updateRealTimeDatabaseUserData(currentUser);
 
     }
     public boolean waitingForTheFirstTime = false;
@@ -210,19 +209,29 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
         Esta função toma conta da escuta alterações de players que estão na mesma sala
         e encaminha os comandos para processamento por meio da função enqueueMessage()
       */
+
     @Override
     public void handleMultiplayer(){
         PlayerData pd = PlayerData.myPlayerData();
-        //Primeiro esperar player se conectar
+
+        //Testar primeiro se o usuário local está conectado a uma sala, e esperar ele se conectar
         DatabaseReference player = referencia.child("players").child(pd.getAuthUID());
         Log.d("Wait for players", String.valueOf(player.child("isConnected")));
+
 
 
         player.child("isConnectedToARoom").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Log.d("Wait for players", "updated isConnectedTOARoom " + String.valueOf(snapshot.getValue()));
-                //Se estiver connectado, pegar players que está junto na mesma sala
+
+                /*
+
+                    Se estiver connectado, pegar instâncias de outros players que estão conectados na mesma sala
+                    e adicionar um listener para escutar mudanças de posição nesses players
+
+                 */
+
                 if((Boolean) snapshot.getValue()){
                     referencia.child("players").addChildEventListener(new ChildEventListener() {
                         @Override
@@ -234,6 +243,12 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                         public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                             HashMap<String, Object> player = (HashMap<String, Object>) snapshot.getValue();
                             if(((String) player.get("connectedRoomID")).equals(pd.getConnectedRoomID())){
+                                /*
+                                    Ao receber alguma mudança de algum player que está na mesma sala e não é o player local,
+                                    encaminhar mensagem para processamento.
+
+                                 */
+
                                 Log.d("Wait for players", "Atualizou alguem da sala" + String.valueOf(snapshot.getValue()));
                                 //Apenas levar em conta mudanças se não for o mesmo ID que ID local
                                 if(!((String) player.get("authUID")).equals(pd.getAuthUID())){
@@ -273,37 +288,6 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
 
             }
         });
-
-
-//        Query playerPesquisa = players.startAt("READYTOPLAY_-").endAt("READYTOPLAY_~").orderByChild("stateAndLastTime").limitToLast(ultimosUsuarios);
-//
-//        playerPesquisa.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                for (DataSnapshot zoneSnapshot : dataSnapshot.getChildren()) {
-//
-//                    Log.d(TAG, "listener dos " + ultimosUsuarios + " users ordem lastUpdateTime " + zoneSnapshot.child("cmd").getValue() + " " + zoneSnapshot.child("lastUpdateTime").getValue());
-//                    // TODO chamar funcao de interface implementada por LIBGDX e setada aqui
-//                    //if ()
-//                    //AndroidInterfaceClass.gameLibGDX.exibeLa(msg);
-//                    if (AndroidInterfaceClass.gameLibGDX != null) {
-//                        String registrationTime = "" + zoneSnapshot.child("registrationTime").getValue();
-//                        String authUID = "" + zoneSnapshot.child("authUID").getValue();
-//                        String cmd = "" + zoneSnapshot.child("cmd").getValue();
-//                        String lastUpdateTime = "" + zoneSnapshot.child("lastUpdateTime").getValue();
-//
-//                        AndroidInterfaceClass.gameLibGDX.enqueueMessage(InterfaceLibGDX.ALL_PLAYERS_DATA, registrationTime, authUID, cmd, lastUpdateTime);
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.i(TAG, "playerPesquisa.addValueEventListener onCancelled", databaseError.toException());
-//            }
-//        });
-
-
     }
 
 
@@ -387,11 +371,8 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                     }
                     if (fazSoUmaVez == 0){
                         fazSoUmaVez++;
-                        // qualquer alteração em player->uID será notificada
-                        //SetOnValueChangedListener();
                     }
                     Log.d(TAG," fazSoUmaVez:"+fazSoUmaVez);
-
                 }
             });
         }
@@ -417,7 +398,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
         this.finishAndRemoveTask();
     }
 
-    //Função para atualizar instância local de room
+    //Função para atualizar instância local de room com informações do firebase
     @Override
     public void sincronizeLocalRoom(){
         PlayerData pd = PlayerData.myPlayerData();
@@ -489,8 +470,10 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                         Room room = Room.myRoom();
                         DatabaseReference roomRef = database.getReference("rooms").child(pd.getConnectedRoomID());
 
+                        //Desconectar player da sala atual
                         roomRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                             ArrayList<String> connectedPlayersIDsArray = new ArrayList<String>();
+
 
                             public void onComplete(@NonNull Task<DataSnapshot> task) {
                                 ArrayList<String> connectedPlayersIDsArray = new ArrayList<String>();
@@ -530,6 +513,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                                     roomRef.setValue(room);
                                     pdRef.setValue(pd);
 
+                                    //Conectar em nova sala
                                     DatabaseReference newRoomRef = database.getReference("rooms").child(newRoomID);
                                     newRoomRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                                         public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -573,6 +557,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                             }
                         });
                     } else {
+                        //Se não estiver conectado em alguma sala, conectar a sala dada
                         DatabaseReference newRoomRef = database.getReference("rooms").child(newRoomID);
                         newRoomRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                             public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -622,6 +607,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
         });
     }
 
+    //Função para desconectar da sala conectada atualmente
     @Override
     public void disconnectFromRoom(){
         PlayerData pd = PlayerData.myPlayerData();
@@ -634,6 +620,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                 if (!task.isSuccessful()) {
                     Log.e("Sincronize local Room", "Error getting data", task.getException());
                 } else {
+                    //Editar informações do jogador no firebase para desconectalo
                     Log.d("Sincronize local Room", String.valueOf(task.getResult().getValue()));
 
                     HashMap<String, Object> playerHashMap = new HashMap<>();
@@ -652,6 +639,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                     }
 
                     if(pd.getIsConnectedToARoom()){
+                        //Atualizar informações da instância da sala do firebase para desconectalo
                         Room room = Room.myRoom();
                         DatabaseReference roomRef = database.getReference("rooms").child(pd.getConnectedRoomID());
 
@@ -703,6 +691,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
         });
     }
 
+    //Buscar primeira sala vazia para se conectar
     @Override
     public void searchForAvailableRooms(){
         PlayerData pd = PlayerData.myPlayerData();
@@ -813,7 +802,6 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
             }
         });
     }
-
 }
 
 
