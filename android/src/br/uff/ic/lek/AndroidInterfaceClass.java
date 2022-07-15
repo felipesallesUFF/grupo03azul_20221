@@ -51,131 +51,130 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
     private FirebaseAuth mAuth;
     // // [END declare_auth
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // [START initialize_auth]
-        // Initialize Firebase Auth
-        mAuth = FirebaseAuth.getInstance();
-        // [END initialize_auth]
-    }
+     @Override
+     public void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         // [START initialize_auth]
+         // Initialize Firebase Auth
+         mAuth = FirebaseAuth.getInstance();
+         // [END initialize_auth]
+     }
 
-    // [START on_start_check_user]
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            reload();
-        }
-    }
-    // [END on_start_check_user]
+     // [START on_start_check_user]
+     @Override
+     public void onStart() {
+         super.onStart();
+         // Check if user is signed in (non-null) and update UI accordingly.
+         FirebaseUser currentUser = mAuth.getCurrentUser();
+         if (currentUser != null) {
+             reload();
+         }
+     }
+     // [END on_start_check_user]
 
-    private void createAccount(String email, String password) {
-        // [START create_user_with_email]
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "createUserWithEmail:success");
-                            FirebaseUser currentUser = mAuth.getCurrentUser();
-                            updateUI(currentUser);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            //Toast.makeText(AndroidInterfaceClass.this, "Authentication failed.",
-                            //        Toast.LENGTH_SHORT).show();
-                            updateUI(null);
-                        }
-                    }
-                });
-        // [END create_user_with_email]
-    }
+     private void createAccount(String email, String password) {
+         // [START create_user_with_email]
+         mAuth.createUserWithEmailAndPassword(email, password)
+                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                     @Override
+                     public void onComplete(@NonNull Task<AuthResult> task) {
+                         if (task.isSuccessful()) {
+                             // Sign in success, update UI with the signed-in user's information
+                             Log.d(TAG, "createUserWithEmail:success");
+                             FirebaseUser currentUser = mAuth.getCurrentUser();
+                             updateUI(currentUser);
+                         } else {
+                             // If sign in fails, display a message to the user.
+                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                             //Toast.makeText(AndroidInterfaceClass.this, "Authentication failed.",
+                             //        Toast.LENGTH_SHORT).show();
+                             updateUI(null);
+                         }
+                     }
+                 });
+         // [END create_user_with_email]
+     }
 
-    private void signIn(String email, String password) {
-        // [START sign_in_with_email]
-        System.out.println("*********************************");
-        System.out.println("***** "+email+" ***** "+password);
+     private void signIn(String email, String password) {
+         // [START sign_in_with_email]
+         System.out.println("*********************************");
+         System.out.println("***** "+email+" ***** "+password);
 
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success"+email+" "+password);
-                            FirebaseUser currentUser = mAuth.getCurrentUser();
-                            updateUI(currentUser);
-                        } else {
+         mAuth.signInWithEmailAndPassword(email, password)
+                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                     @Override
+                     public void onComplete(@NonNull Task<AuthResult> task) {
+                         if (task.isSuccessful()) {
+                             // Sign in success, update UI with the signed-in user's information
+                             Log.d(TAG, "signInWithEmail:success"+email+" "+password);
+                             FirebaseUser currentUser = mAuth.getCurrentUser();
+                             updateUI(currentUser);
+                         } else {
 
-                            System.out.println("*********************************");
-                            // If sign in fails, display a message to the user.
-                            Log.d(TAG, "signInWithEmail:failure"+email+" "+password, task.getException());
-                            updateUI(null);
-                        }
-                    }
-                });
-        // [END sign_in_with_email]
-    }
+                             System.out.println("*********************************");
+                             // If sign in fails, display a message to the user.
+                             Log.d(TAG, "signInWithEmail:failure"+email+" "+password, task.getException());
+                             updateUI(null);
+                         }
+                     }
+                 });
+         // [END sign_in_with_email]
+     }
 
-    private void sendEmailVerification() {
-        // Send verification email
-        // [START send_email_verification]
-        final FirebaseUser user = mAuth.getCurrentUser();
-        user.sendEmailVerification()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // Email sent
-                    }
-                });
-        // [END send_email_verification]
-    }
+     private void sendEmailVerification() {
+         // Send verification email
+         // [START send_email_verification]
+         final FirebaseUser user = mAuth.getCurrentUser();
+         user.sendEmailVerification()
+                 .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                     @Override
+                     public void onComplete(@NonNull Task<Void> task) {
+                         // Email sent
+                     }
+                 });
+         // [END send_email_verification]
+     }
 
-    private void reload() {
-    }
+     private void reload() {
+     }
 
-    private void updateUI(FirebaseUser currentUser) {
-        if (currentUser == null) return;
-        providerID = currentUser.getProviderId();
-        uID = currentUser.getUid();
-        email = currentUser.getEmail();
-        Log.d(TAG, "updateUI providerID:" + providerID + " uID:" + uID + " email:" + email);
-        currentUserDefined(currentUser);
-        updateRealTimeDatabaseUserData(currentUser);
-    }
+     private void updateUI(FirebaseUser currentUser) {
+         if (currentUser == null) return;
+         providerID = currentUser.getProviderId();
+         uID = currentUser.getUid();
+         email = currentUser.getEmail();
+         Log.d(TAG, "updateUI providerID:" + providerID + " uID:" + uID + " email:" + email);
+         currentUserDefined(currentUser);
+         updateRealTimeDatabaseUserData(currentUser);
+     }
 
-    /*
-       Carregar instância de currentUser no local
-     */
-    private void currentUserDefined(FirebaseUser currentUser) {
-        if (currentUser != null) {
-            email = currentUser.getEmail();
-            try {
-                final String before = email.split("@")[0];
-                playerNickName = before;
 
-            } catch (Exception e) {
-                Log.d(TAG, "nao encontrou @");
-            }
-            Log.d(TAG, "playerNickName:" + playerNickName);
-            uID = currentUser.getUid();
-            providerID = currentUser.getProviderId();
-            Log.d(TAG, "currentUser " + email + " " + providerID);
-            String original = email;
-            String _pwd = original.replace("@gmail.com", "");
-            pwd = _pwd;
-            Log.d(TAG, "Use SQLite to save email=" + email + " pwd=" + pwd + " uID=" + uID);
-        } else {
-            Log.d(TAG, "currentUser eh null");
-        }
-    }
+     private void currentUserDefined(FirebaseUser currentUser) {
+         if (currentUser != null) {
+             email = currentUser.getEmail();
+             try {
+                 final String before = email.split("@")[0];
+                 playerNickName = before;//ou aqui que o problema está.
+
+             } catch (Exception e) {
+                 Log.d(TAG, "nao encontrou @");
+             }
+             Log.d(TAG, "playerNickName:" + playerNickName);
+             uID = currentUser.getUid();
+             providerID = currentUser.getProviderId();
+             Log.d(TAG, "currentUser " + email + " " + providerID);
+             String original = email;
+             String _pwd = original.replace("@gmail.com", "");
+             pwd = _pwd;
+             Log.d(TAG, "Use SQLite to save email=" + email + " pwd=" + pwd + " uID=" + uID);
+         } else {
+             Log.d(TAG, "currentUser eh null");
+         }
+     }
 
     public AndroidInterfaceClass(String playerNickName, String emailCRC32, String pwdCRC32, int runningTimes) {
-        this.playerNickName = playerNickName;
+        this.playerNickName = playerNickName;//aqui ele está atualizando a variavel nickname e depois email com
+        //os valores originais.
         this.runningTimes = runningTimes;
         Log.d(TAG, "construtor AndroidInterfaceClass execucoes:" +runningTimes+ " playerNickName="+playerNickName+" emailCRC32="+emailCRC32+" pwdCRC32="+pwdCRC32);
 
@@ -312,8 +311,8 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
             pd.setAvatarType("A");
             pd.setCmd("{cmd:WAITING,px:1.1,py:2.2,pz:3.3,cardNumber:4,uID:"+uID+"}"); // LEK todo: mudar para uma constante melhor
             Log.d(TAG,"WAITING");
-            pd.setPlayerNickName(playerNickName);
-            pd.setEmail(email);
+            //pd.setPlayerNickName(playerNickName);aqui que está sendo feito a atualização com o valor antigo .
+            //pd.setEmail(email);
 
 
             Calendar calendar = Calendar.getInstance();

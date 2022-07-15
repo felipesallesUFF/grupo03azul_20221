@@ -75,7 +75,6 @@ public class Menu implements Screen {
         TextButton playButton = new TextButton("Play", skin);
         TextButton NicknameButton = new TextButton("MudarNickname", skin);
         TextButton EmailButton = new TextButton("MudarEmail", skin);
-        TextButton exitButton = new TextButton("Exit", skin);
 
         //Add listeners to buttons
         playButton.addListener(new ClickListener(){
@@ -128,12 +127,6 @@ public class Menu implements Screen {
                 Gdx.input.setOnscreenKeyboardVisible(true);//subir o teclado no celular
             }
         });
-        exitButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();//sair do jogo
-            }
-        });
 
         //Add buttons to table
         mainTable.add(playButton);
@@ -141,8 +134,6 @@ public class Menu implements Screen {
         mainTable.add(NicknameButton);
         mainTable.row();
         mainTable.add(EmailButton);
-        mainTable.row();
-        mainTable.add(exitButton);
 
         //Add table to stage
         stage.addActor(mainTable);
