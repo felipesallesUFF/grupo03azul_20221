@@ -258,15 +258,5 @@ public class ClassThreadComandos extends Thread implements InterfaceLibGDX {
             avatar.setY(y);
         }
 
-//        System.out.println(
-//                "\nclasse "+((ClassMessage) obj).getClssName()+
-//                        " class "+((ClassMessage) obj).getClss()+
-//                        "\n cmd "+((ClassMessage) obj).getCmd()+
-//                        " x="+((ClassMessage) obj).getPx()+
-//                        " y="+((ClassMessage) obj).getPy()+
-//                        " z="+((ClassMessage) obj).getPz()+
-//                        " cardNumber="+((ClassMessage) obj).getCardNumber()+
-//                        " uID="+((ClassMessage) obj).getuID() );
-
     }
 }

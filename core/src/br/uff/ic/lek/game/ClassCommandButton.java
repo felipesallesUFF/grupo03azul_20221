@@ -194,8 +194,10 @@ public class ClassCommandButton extends ClassActorAccessor {
 
                         if (executouUmaVez == false) {
                             executouUmaVez=true;
+                            //Funções adicionadas para multiplayer
                             ClassThreadComandos.objetoAndroidFireBase.searchForAvailableRooms();
                             ClassThreadComandos.objetoAndroidFireBase.handleMultiplayer();
+
                             // ClassThreadComandos.objetoAndroidFireBase.waitForMyMessages();
                             Color backgroundColor = new Color(0f, 0f, 0f, 0.5f);
                             Color fontColor = new Color(1, 1, 0, 0.5f);

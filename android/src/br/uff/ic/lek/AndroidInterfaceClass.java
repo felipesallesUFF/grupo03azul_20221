@@ -725,7 +725,15 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                     }
 
                     if(pd.getIsConnectedToARoom() == false) {
+
+                        /*
+                            Antes de tentar conectar a uma sala nova, fazer limpeza de jogadores inativos;
+                            Pegar todas as salas, se estiver cheia, testar se há algum player que pode ser desconectado (passou do seu limite de tempo)
+                            se sim, desconectar jogador.
+                         */
+
                         DatabaseReference roomsRef = database.getReference("rooms");
+
                         roomsRef.orderByChild("isFull").equalTo(false).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<DataSnapshot> task) {
