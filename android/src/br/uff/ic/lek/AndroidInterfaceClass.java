@@ -154,7 +154,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
              email = currentUser.getEmail();
              try {
                  final String before = email.split("@")[0];
-                 playerNickName = before;
+                 playerNickName = before;//ou aqui que o problema está.
 
              } catch (Exception e) {
                  Log.d(TAG, "nao encontrou @");
@@ -173,7 +173,8 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
      }
 
     public AndroidInterfaceClass(String playerNickName, String emailCRC32, String pwdCRC32, int runningTimes) {
-        this.playerNickName = playerNickName;
+        this.playerNickName = playerNickName;//aqui ele está atualizando a variavel nickname e depois email com
+        //os valores originais.
         this.runningTimes = runningTimes;
         Log.d(TAG, "construtor AndroidInterfaceClass execucoes:" +runningTimes+ " playerNickName="+playerNickName+" emailCRC32="+emailCRC32+" pwdCRC32="+pwdCRC32);
          
@@ -328,8 +329,8 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
             pd.setAvatarType("A");
             pd.setCmd("{cmd:WAITING,px:1.1,py:2.2,pz:3.3,cardNumber:4,uID:"+uID+"}"); // LEK todo: mudar para uma constante melhor
             Log.d(TAG,"WAITING");
-            pd.setPlayerNickName(playerNickName);
-            pd.setEmail(email);
+            //pd.setPlayerNickName(playerNickName);aqui que está sendo feito a atualização com o valor antigo .
+            //pd.setEmail(email);
 
 
             Calendar calendar = Calendar.getInstance();

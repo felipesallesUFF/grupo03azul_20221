@@ -101,7 +101,7 @@ public class AndroidLauncher extends AndroidApplication {
 			Log.d(TAG, "################ gravando ################");
 		} else {
 
-			playerNickName=savedPlayerNickName;
+			playerNickName=savedPlayerNickName;//Ele está inicializando a interface com o nickname e email originais.
 			pwdCRC32= savedPwdCRC32;
 			emailCRC32=savedEmailCRC32;
 			SharedPreferences sharedPreferences = getSharedPreferences(sharedPreferencesName, Context.MODE_PRIVATE);
