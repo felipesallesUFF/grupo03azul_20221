@@ -31,6 +31,7 @@ import java.util.*;
 
 import br.uff.ic.lek.actors.Avatar;
 import br.uff.ic.lek.game.World;
+import br.uff.ic.lek.screens.Menu;
 
 public class AndroidInterfaceClass extends Activity implements InterfaceAndroidFireBase {
     public static final boolean debugFazPrimeiraVez = false;
@@ -312,10 +313,8 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
             pd.setAvatarType("A");
             pd.setCmd("{cmd:WAITING,px:1.1,py:2.2,pz:3.3,cardNumber:4,uID:"+uID+"}"); // LEK todo: mudar para uma constante melhor
             Log.d(TAG,"WAITING");
-            playerNickName = pd.getPlayerNickName();
             pd.setPlayerNickName(playerNickName);//aqui que está sendo feito a atualização com o valor antigo .
-            email = pd.getEmail();
-            pd.setEmail(email);
+            pd.setEmail(currentUser.getEmail());
 
 
             Calendar calendar = Calendar.getInstance();
