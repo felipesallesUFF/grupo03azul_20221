@@ -312,8 +312,10 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
             pd.setAvatarType("A");
             pd.setCmd("{cmd:WAITING,px:1.1,py:2.2,pz:3.3,cardNumber:4,uID:"+uID+"}"); // LEK todo: mudar para uma constante melhor
             Log.d(TAG,"WAITING");
-            //pd.setPlayerNickName(playerNickName);aqui que está sendo feito a atualização com o valor antigo .
-            //pd.setEmail(email);
+            playerNickName = pd.getPlayerNickName();
+            pd.setPlayerNickName(playerNickName);//aqui que está sendo feito a atualização com o valor antigo .
+            email = pd.getEmail();
+            pd.setEmail(email);
 
 
             Calendar calendar = Calendar.getInstance();
