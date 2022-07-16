@@ -156,7 +156,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
              email = currentUser.getEmail();
              try {
                  final String before = email.split("@")[0];
-                 playerNickName = before;//ou aqui que o problema está.
+                 playerNickName = before;
 
              } catch (Exception e) {
                  Log.d(TAG, "nao encontrou @");
@@ -175,7 +175,7 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
      }
 
     public AndroidInterfaceClass(String playerNickName, String emailCRC32, String pwdCRC32, int runningTimes) {
-        this.playerNickName = playerNickName;//aqui ele está atualizando a variavel nickname e depois email com
+        this.playerNickName = playerNickName;
         //os valores originais.
         this.runningTimes = runningTimes;
         Log.d(TAG, "construtor AndroidInterfaceClass execucoes:" +runningTimes+ " playerNickName="+playerNickName+" emailCRC32="+emailCRC32+" pwdCRC32="+pwdCRC32);

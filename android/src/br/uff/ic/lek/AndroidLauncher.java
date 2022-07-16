@@ -23,6 +23,7 @@ public class AndroidLauncher extends AndroidApplication {
 	private static final String TAG = "JOGO";
 	protected String playerNickName;
 	protected String emailCRC32;
+	public String email = "prot";
 	protected String pwdCRC32;
 	protected int runningTimes;
 	protected String sharedPreferencesName = "ALCH0005";
@@ -101,7 +102,7 @@ public class AndroidLauncher extends AndroidApplication {
 			Log.d(TAG, "################ gravando ################");
 		} else {
 
-			playerNickName=savedPlayerNickName;//Ele está inicializando a interface com o nickname e email originais.
+			playerNickName=savedPlayerNickName;
 			pwdCRC32= savedPwdCRC32;
 			emailCRC32=savedEmailCRC32;
 			SharedPreferences sharedPreferences = getSharedPreferences(sharedPreferencesName, Context.MODE_PRIVATE);
@@ -136,6 +137,6 @@ public class AndroidLauncher extends AndroidApplication {
 		config.useWakelock = true;
 		config.useAccelerometer = true;
 		useImmersiveMode (true);
-		initialize(new Alquimia(new AndroidInterfaceClass(playerNickName, emailCRC32, pwdCRC32, runningTimes)), config);
+		initialize(new Alquimia(new AndroidInterfaceClass(playerNickName, email, pwdCRC32, runningTimes)), config);
 	}
 }
