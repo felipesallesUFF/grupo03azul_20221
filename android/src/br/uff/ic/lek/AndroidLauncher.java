@@ -23,7 +23,6 @@ public class AndroidLauncher extends AndroidApplication {
 	private static final String TAG = "JOGO";
 	protected String playerNickName;
 	protected String emailCRC32;
-	public String email = "prot";
 	protected String pwdCRC32;
 	protected int runningTimes;
 	protected String sharedPreferencesName = "ALCH0005";
@@ -137,6 +136,6 @@ public class AndroidLauncher extends AndroidApplication {
 		config.useWakelock = true;
 		config.useAccelerometer = true;
 		useImmersiveMode (true);
-		initialize(new Alquimia(new AndroidInterfaceClass(playerNickName, email, pwdCRC32, runningTimes)), config);
+		initialize(new Alquimia(new AndroidInterfaceClass(playerNickName, emailCRC32, pwdCRC32, runningTimes)), config);
 	}
 }
