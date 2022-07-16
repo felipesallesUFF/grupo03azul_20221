@@ -40,6 +40,7 @@ import com.badlogic.gdx.math.Vector3;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import br.uff.ic.lek.game.World;
@@ -519,7 +520,7 @@ public class Avatar extends Sprite {
 
         //Atualizar timeStamp do firebase
         Calendar calendar = Calendar.getInstance();
-        java.util.Date now = calendar.getTime();
+        Date now = calendar.getTime();
         pd.setLastUpdateTime("" + now.getTime());
         return pd;
     }

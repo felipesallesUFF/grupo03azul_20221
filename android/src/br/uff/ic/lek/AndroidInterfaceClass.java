@@ -1,4 +1,5 @@
 package br.uff.ic.lek;
+import java.math.BigInteger;
 import java.util.*;
 import android.app.Activity;
 import android.os.Bundle;
@@ -690,6 +691,12 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
         });
     }
 
+    /*
+        As respostas do firebase são manipuladas por meios de Hashmaps com strings para as chaves.
+        O firebase não oferece um meio de verificar os tipos dos valores recebidos, mas como faz parte da nossa modelagem,
+        sabemos os tipos de valores que esperar para cada campo, assim é possível fazer cast sem problemas.
+     */
+
     //Buscar primeira sala vazia para se conectar
     @Override
     public void searchForAvailableRooms(){
@@ -724,14 +731,11 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                         pd.setConnectedRoomID((String) playerHashMap.get("connectedRoomID"));
                     }
 
+                    //Se jogador não estiver conectado, fazer processo
                     if(pd.getIsConnectedToARoom() == false) {
-
                         /*
-                            Antes de tentar conectar a uma sala nova, fazer limpeza de jogadores inativos;
-                            Pegar todas as salas, se estiver cheia, testar se há algum player que pode ser desconectado (passou do seu limite de tempo)
-                            se sim, desconectar jogador.
+                             Conectar a uma sala, que não está cheia, se não existirem salas, não cheias criar uma sala nova
                          */
-
                         DatabaseReference roomsRef = database.getReference("rooms");
 
                         roomsRef.orderByChild("isFull").equalTo(false).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -748,11 +752,16 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                                     HashMap<String, Object> chosenRoom = new HashMap<>();
                                     String chosenRoomID = "";
 
+                                    pd.setIsConnectedToARoom(true);
+                                    pd.setConnectedRoomID(newRoomID);
+                                    pdRef.setValue(pd);
+
                                     if(task.getResult().exists()){
                                         for(DataSnapshot room : resData){
                                             chosenRoom = (HashMap<String, Object>) room.getValue();
                                             chosenRoomID = room.getKey();
                                             Log.d("Search Rooms", "Chosen Room:" + String.valueOf(room.getKey()) + ": " + String.valueOf(String.valueOf(chosenRoom)));
+                                            //Aqui é dado um break, pois como pela query validamos se a sala está cheia ou não a primeira sala não cheia serve
                                             break;
                                         }
                                         ArrayList<String> IDsArray = (ArrayList<String>) chosenRoom.get("connectedPlayersIDs");
@@ -764,8 +773,6 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                                             IDsArray = new ArrayList<String>();
                                             IDsArray.add(currentUser.getUid());
                                         }
-
-
 
                                         //Atualizar instancia de sala local
                                         newRoom.setconnectedPlayersIDs(IDsArray);
@@ -802,6 +809,99 @@ public class AndroidInterfaceClass extends Activity implements InterfaceAndroidF
                                     pd.setConnectedRoomID(newRoomID);
                                     pdRef.setValue(pd);
                                 }
+
+                                /*
+                                    Tratamento de lixo
+                                    Pegar todos os jogadores, testar se há algum player que pode ser desconectado (passou do seu limite de tempo)
+                                    se sim, desconectar jogador de sua sala.
+                                */
+
+                                database.getReference("players").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                        if (!task.isSuccessful()) {
+                                            Log.e("Search Trash cleaning", "Error getting data", task.getException());
+                                        } else {
+                                            Iterable<DataSnapshot> resData = task.getResult().getChildren();
+
+                                            Log.d("Search Trash cleaning", "Jogadores: " + String.valueOf(task.getResult().getValue()));
+
+                                            if(task.getResult().exists()){
+                                                for(DataSnapshot player : resData){
+                                                    HashMap<String, Object> currentPlayer = (HashMap<String, Object>) player.getValue();
+                                                    String currentPlayerID = player.getKey();
+                                                    Date now = new Date();
+
+                                                    //É preciso trabalhar com bigInteger pelo tamanho do número, depois é convertido para inteiro
+                                                    BigInteger nowBig = BigInteger.valueOf(now.getTime());
+                                                    BigInteger currentPlayerLastUpdateTime = new BigInteger((String) currentPlayer.get("lastUpdateTime"));
+                                                    Integer secondsDif = (nowBig.subtract(currentPlayerLastUpdateTime)).intValue()/1000;
+
+                                                    System.out.println("Aqui: " + String.valueOf(currentPlayerLastUpdateTime));
+                                                    System.out.println("Aqui: " + String.valueOf(BigInteger.valueOf(now.getTime())));
+                                                    System.out.println("Aqui: " + String.valueOf(secondsDif));
+
+                                                    //limite de 5 horas, em segundos
+                                                    Integer limit = 3600 * 5;
+                                                    if((Boolean) currentPlayer.get("isConnectedToARoom") == true & secondsDif > limit){
+                                                        Log.d("Search Trash cleaning", "Inactive player: " + currentPlayerID);
+                                                        //Desconectar-lo da sala
+                                                        String inactivePlayerRoomID = (String)currentPlayer.get("connectedRoomID");
+
+                                                        //Mudar informações no objeto do player do firebase
+                                                        DatabaseReference inactivePlayerRef = database.getReference("players").child(currentPlayerID);
+                                                        inactivePlayerRef.child("isConnectedToARoom").setValue(false);
+                                                        inactivePlayerRef.child("connectedRoomID").setValue("");
+
+                                                        //Mudar informações da sala que ele está conectado
+                                                        DatabaseReference roomRef = database.getReference("rooms").child(inactivePlayerRoomID);
+                                                        roomRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                                                if (!task.isSuccessful()) {
+                                                                    Log.e("Disconnect from room", "Error getting data", task.getException());
+                                                                } else {
+                                                                    Log.d("Disconnect from room", String.valueOf(task.getResult().getValue()));
+
+                                                                    HashMap<String, Object> roomHashMap = new HashMap<>();
+                                                                    roomHashMap = (HashMap<String, Object>) task.getResult().getValue();
+
+                                                                    ArrayList<String> connectedPlayersIDsArray = (ArrayList<String>) roomHashMap.get("connectedPlayersIDs");
+                                                                    Log.d("Disconnect from room", "Array: " + String.valueOf(connectedPlayersIDsArray));
+
+                                                                    int index = 0;
+                                                                    for (int i = 0; i < connectedPlayersIDsArray.size(); i++) {
+                                                                        if(connectedPlayersIDsArray.get(i) != null){
+                                                                            Log.d("Disconnect from room", "esq: " + String.valueOf(connectedPlayersIDsArray.get(i)) + " dir: " + String.valueOf(currentPlayerID));
+                                                                            Log.d("Disconnect from room", "teste: " + String.valueOf(connectedPlayersIDsArray.get(i).equals(currentPlayerID)));
+                                                                            if (connectedPlayersIDsArray.get(i).equals(currentPlayerID)) {
+                                                                                Log.d("Disconnect from room", "removed: " + String.valueOf(connectedPlayersIDsArray.get(i)));
+                                                                                index = i;
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                    }
+
+                                                                    //Se for a unica pessoa na sala, remover a sala
+                                                                    if(((Long) roomHashMap.get("numberOfConnectedPlayers")) - 1 == 0){
+                                                                        roomRef.removeValue();
+                                                                    } else {
+                                                                        connectedPlayersIDsArray.remove(index);
+                                                                        roomRef.child("numberOfConnectedPlayers").setValue(((Long) roomHashMap.get("numberOfConnectedPlayers")) - 1);
+                                                                        roomRef.child("isFull").setValue(false);
+                                                                        roomRef.child("connectedPlayersIDs").setValue(connectedPlayersIDsArray);
+                                                                    }
+                                                                }
+
+                                                                //Após checar se é possível remover outros playuer
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                });
                             }
                         });
                     }
